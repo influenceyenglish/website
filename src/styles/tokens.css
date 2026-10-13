@@ -1,0 +1,48 @@
+﻿@font-face {
+  font-family: "Rothorn";
+  src: url("/fonts/rothorn-demi.woff2") format("woff2");
+  font-weight: 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Rothorn";
+  src: url("/fonts/rothorn-bold.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "DM Sans";
+  src: url("/fonts/dm-sans.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+:root {
+  --ink: #042d2b;
+  --body-ink: #122426;
+  --paper: #f2efea;
+  --white: #fff;
+  --accent: #e9e778;
+  --muted: #042d2b66;
+  --font-heading: "Rothorn", sans-serif;
+  --font-body: "DM Sans", sans-serif;
+  --page-gutter: 80px;
+  --content-width: 1400px;
+  --radius: 32px;
+}
+@media (min-width: 1600px) {
+  :root {
+    --page-gutter: 100px;
+  }
+}
+@media (min-width: 810px) and (max-width: 1199px) {
+  :root {
+    --page-gutter: 52px;
+    --radius: 24px;
+  }
+}
+@media (max-width: 809px) {
+  :root {
+    --page-gutter: 24px;
+    --radius: 16px;
+  }
+}

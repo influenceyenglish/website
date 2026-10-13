@@ -1,0 +1,130 @@
+.audience {
+  position: relative;
+}
+.audience {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 48px;
+  padding: 48px var(--page-gutter) 100px;
+  background: white;
+}
+.audienceVisual {
+  height: 585px;
+  border-radius: 32px;
+  overflow: hidden;
+}
+.audienceCopy {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+.checklist {
+  border-radius: 24px;
+  background: var(--paper);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 36px;
+}
+.checklistItem {
+  position: relative;
+}
+.checklistItem svg {
+  position: absolute;
+  left: -54px;
+  top: 0;
+}
+.checklistItem p {
+  font-family: var(--font-heading);
+  font-size: 18px;
+  line-height: 1.2;
+  letter-spacing: -0.04em;
+}
+@media (min-width: 810px) and (max-width: 1199px) {
+  .audience {
+    gap: 32px;
+    padding: 48px 52px 120px;
+  }
+  .audienceVisual {
+    height: 365px;
+    border-radius: 24px;
+  }
+  .audienceCopy {
+    gap: 32px;
+  }
+  .checklist {
+    padding: 24px;
+  }
+  .checklistItem p {
+    font-size: 16px;
+  }
+  .checklistItem svg {
+    width: 28px;
+    height: 28px;
+    left: -38px;
+  }
+}
+@media (max-width: 809px) {
+  .audience {
+    grid-template-columns: 1fr;
+    padding: 0 24px;
+    gap: 32px;
+  }
+  .audienceVisual {
+    height: auto;
+    aspect-ratio: 1.0526;
+    border-radius: 24px;
+  }
+  .audienceCopy {
+    gap: 18px;
+  }
+  .audienceHeading br {
+    display: none;
+  }
+  .checklist {
+    padding: 20px;
+    border-radius: 16px;
+    gap: 20px;
+    margin-left: 0;
+  }
+  .checklistItem {
+    padding-left: 0;
+  }
+  .checklistItem svg {
+    left: -30px;
+    top: 0;
+    width: 28px;
+    height: 28px;
+  }
+  .checklistItem p {
+    font-size: 16px;
+  }
+}
+.practiceCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  padding: 40px;
+  background: var(--ink);
+  color: white;
+  gap: 32px;
+  border-radius: inherit;
+}
+.practiceWord {
+  font-family: var(--font-heading);
+  font-size: clamp(44px, 5vw, 76px);
+  line-height: 1.05;
+  letter-spacing: -0.05em;
+  color: var(--accent);
+}
+@media (max-width: 809px) {
+  .practiceCard {
+    padding: 28px;
+  }
+  .audienceVisual {
+    min-height: 360px;
+    aspect-ratio: auto;
+  }
+}

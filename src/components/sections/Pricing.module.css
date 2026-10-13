@@ -1,0 +1,109 @@
+﻿.pricing {
+  position: relative;
+  background: var(--paper);
+  padding: 0 var(--page-gutter) 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 48px;
+}
+.pricingHeader {
+  max-width: 760px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  text-align: center;
+}
+.pricingCard {
+  width: 100%;
+  max-width: 1200px;
+  padding: 12px;
+  background: var(--ink);
+  color: white;
+  border-radius: 32px;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 24px;
+}
+.priceSummary {
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+}
+.includes {
+  margin: 0;
+  list-style: none;
+  color: var(--ink);
+  background: white;
+  border-radius: 24px;
+  padding: 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 24px;
+}
+.includes li {
+  position: relative;
+}
+.includes li svg {
+  position: absolute;
+  left: -51px;
+  top: -2px;
+}
+.includes p {
+  font-size: 18px;
+  line-height: 1.4;
+}
+.billingNote {
+  font-size: 13px;
+  color: #e0e8e4;
+}
+.billingNote a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.policyNote {
+  max-width: 760px;
+  text-align: center;
+  font-size: 13px;
+  color: #59635d;
+}
+@media (max-width: 1199px) {
+  .pricingCard {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 809px) {
+  .pricing {
+    padding: 0 12px 56px;
+    gap: 28px;
+  }
+  .pricingHeader {
+    padding: 0 12px;
+    gap: 16px;
+  }
+  .pricingCard {
+    padding: 8px;
+    border-radius: 24px;
+    gap: 16px;
+  }
+  .priceSummary {
+    padding: 16px;
+  }
+  .includes {
+    padding: 28px;
+    border-radius: 16px;
+    gap: 20px;
+  }
+  .includes p {
+    font-size: 16px;
+  }
+  .includes li svg {
+    width: 28px;
+    height: 28px;
+    left: -41px;
+    top: -2px;
+  }
+}

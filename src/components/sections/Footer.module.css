@@ -1,0 +1,138 @@
+.footer {
+  position: relative;
+  background: var(--ink);
+  color: white;
+  padding: 100px 100px 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 154px;
+  overflow: hidden;
+  min-height: 485px;
+}
+.footerTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 48px;
+  position: relative;
+  z-index: 1;
+}
+.footerTop > div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 56px;
+}
+.footerTop > div > p {
+  font-family: var(--font-heading);
+  font-size: 24px;
+  line-height: 1.2;
+  letter-spacing: -0.04em;
+}
+.footerTop nav {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  font-size: 18px;
+}
+.copyright {
+  font-size: 18px;
+  position: relative;
+  z-index: 1;
+}
+.wordmark {
+  position: absolute;
+  bottom: -100px;
+  right: -20px;
+  color: var(--accent);
+  font-family: var(--font-heading);
+  font-size: 280px;
+  letter-spacing: -0.06em;
+  line-height: 1;
+  white-space: nowrap;
+}
+@media (min-width: 810px) and (max-width: 1199px) {
+  .footer {
+    padding: 80px 52px 52px;
+    gap: 120px;
+    min-height: 396px;
+  }
+  .wordmark {
+    font-size: 230px;
+    bottom: -85px;
+  }
+}
+@media (max-width: 809px) {
+  .footer {
+    padding: 64px 24px 116px;
+    min-height: 650px;
+    gap: 64px;
+  }
+  .footerTop {
+    flex-direction: column;
+    gap: 48px;
+    text-align: center;
+  }
+  .footerTop > div {
+    align-items: center;
+    gap: 32px;
+  }
+  .footerTop > div > p {
+    font-size: 24px;
+  }
+  .footerTop > div > a {
+    width: 100%;
+  }
+  .footerTop nav {
+    align-items: center;
+    gap: 16px;
+    font-size: 16px;
+  }
+  .copyright {
+    text-align: center;
+    font-size: 14px;
+  }
+  .wordmark {
+    bottom: -20px;
+    right: -3px;
+    font-size: 105px;
+  }
+}
+.footer {
+  gap: 40px;
+  padding-bottom: 100px;
+}
+.footerTop > div > p {
+  white-space: pre-line;
+}
+.footerTop nav {
+  font-size: 15px;
+}
+.business {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 10px;
+  font-size: 13px;
+  max-width: 800px;
+  color: #d7e0da;
+}
+.business address {
+  font-style: normal;
+}
+.business a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.wordmark {
+  font-size: clamp(100px, 20vw, 280px);
+  opacity: 0.13;
+  bottom: -32px;
+}
+@media (max-width: 809px) {
+  .business {
+    text-align: center;
+  }
+  .footer {
+    padding-bottom: 80px;
+  }
+}

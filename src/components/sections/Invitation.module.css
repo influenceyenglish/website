@@ -1,0 +1,121 @@
+.invitation {
+  position: relative;
+}
+.invitation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 64px;
+  padding: 80px 100px;
+  background: var(--ink);
+  color: white;
+  text-align: center;
+  overflow: visible;
+  z-index: 1;
+}
+.invitationCopy {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.invitationActions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+}
+.floatingQuote {
+  position: absolute;
+  width: 360px;
+  right: -70px;
+  top: -80px;
+  text-align: left;
+  color: var(--ink);
+}
+.floatingPortrait {
+  position: absolute;
+  left: -36px;
+  bottom: -40px;
+  --member-card-size: 298px;
+}
+@media (min-width: 810px) and (max-width: 1199px) {
+  .invitation {
+    padding: 80px 52px;
+    gap: 22px;
+  }
+  .floatingQuote {
+    width: 280px;
+    right: -100px;
+  }
+  .floatingPortrait {
+    --member-card-size: 220px;
+    left: -80px;
+  }
+}
+@media (max-width: 809px) {
+  .invitation {
+    padding: 64px 24px 240px;
+    gap: 24px;
+  }
+  .invitationCopy {
+    gap: 24px;
+  }
+  .invitationActions {
+    gap: 16px;
+    width: 100%;
+  }
+  .invitationActions :global(.eyebrow) {
+    font-size: 14px;
+    line-height: 1.4;
+  }
+  .invitationActions a {
+    width: 100%;
+  }
+  .desktopBreak {
+    display: none;
+  }
+  .floatingQuote {
+    width: 305px;
+    top: auto;
+    bottom: -60px;
+    right: -100px;
+  }
+  .floatingPortrait {
+    --member-card-size: 206px;
+    left: -40px;
+    bottom: -4px;
+  }
+}
+.invitation {
+  overflow: hidden;
+  padding: 80px var(--page-gutter);
+  gap: 40px;
+}
+.invitationCopy {
+  max-width: 760px;
+}
+.outcomes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px;
+  max-width: 1200px;
+}
+.outcomes > div {
+  border: 1px solid #ffffff33;
+  border-radius: 20px;
+  padding: 28px;
+  text-align: left;
+  display: grid;
+  gap: 16px;
+}
+.outcomes h3 {
+  color: var(--accent);
+}
+@media (max-width: 809px) {
+  .invitation {
+    padding: 64px 24px;
+  }
+  .outcomes {
+    grid-template-columns: 1fr;
+  }
+}

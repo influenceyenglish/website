@@ -1,0 +1,67 @@
+﻿.proof {
+  padding: 96px var(--page-gutter);
+  background: var(--paper);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  text-align: center;
+}
+.intro {
+  max-width: 620px;
+}
+.testimonials {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  width: 100%;
+  max-width: 1400px;
+  margin-top: 16px;
+  text-align: left;
+}
+.story {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border: 1px solid #042d2b22;
+  padding: 28px;
+  border-radius: 24px;
+  background: white;
+}
+.story > span {
+  color: #59635d;
+  font-size: 11px;
+}
+.placeholder {
+  color: #66736c;
+  font-size: 12px;
+  margin-top: auto;
+}
+.studentProof {
+  padding: 40px var(--page-gutter);
+  display: grid;
+  grid-template-columns: 1fr 2fr auto;
+  align-items: center;
+  gap: 32px;
+  border-bottom: 1px solid #042d2b22;
+}
+.studentProof > p:first-child {
+  font-size: 18px;
+}
+.studentProof a {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+@media (max-width: 809px) {
+  .proof {
+    padding: 64px 24px;
+  }
+  .testimonials {
+    grid-template-columns: 1fr;
+  }
+  .studentProof {
+    padding: 32px 24px;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}

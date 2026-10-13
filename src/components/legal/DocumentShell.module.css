@@ -1,0 +1,76 @@
+﻿.header {
+  padding: 28px var(--page-gutter);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  border-bottom: 1px solid #042d2b22;
+}
+.header > a:first-child {
+  font-family: var(--font-heading);
+  font-size: 22px;
+}
+.header > a:last-child {
+  font-size: 14px;
+}
+.main {
+  max-width: 1000px;
+  margin: auto;
+  padding: 72px var(--page-gutter) 96px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  overflow: visible;
+}
+.main h1 {
+  font-size: clamp(34px, 5vw, 52px);
+}
+.description {
+  font-size: 18px;
+  max-width: 720px;
+}
+.notice {
+  background: #e9e77866;
+  padding: 20px;
+  border-radius: 16px;
+  font-size: 14px;
+}
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+.body section {
+  display: grid;
+  gap: 16px;
+}
+.body h2 {
+  font-size: 26px;
+}
+.body a {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  overflow-wrap: anywhere;
+}
+.body address {
+  font-style: normal;
+}
+.body p {
+  max-width: 80ch;
+}
+.actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+@media (max-width: 809px) {
+  .header {
+    padding: 24px;
+  }
+  .header > a:first-child {
+    font-size: 18px;
+  }
+  .main {
+    padding: 48px 24px 64px;
+  }
+}

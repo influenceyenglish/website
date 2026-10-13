@@ -1,0 +1,153 @@
+.faq {
+  position: relative;
+}
+.faq {
+  background: var(--paper);
+  padding: 40px var(--page-gutter) 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+}
+.faq > h2 {
+  text-align: center;
+}
+.faqList {
+  width: 100%;
+  max-width: 860px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.faqItem {
+  padding: 22px;
+  border-radius: 20px;
+  background: white;
+  overflow: hidden;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+}
+.faqItem h3 {
+  font-size: 18px;
+}
+.faqItem button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--font-heading);
+  font-size: 18px;
+  line-height: 1.2;
+  letter-spacing: -0.04em;
+  text-align: left;
+}
+.faqIcon {
+  display: block;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--ink);
+  flex: none;
+  position: relative;
+}
+.faqIcon > span {
+  height: 1px;
+  width: 10px;
+  background: white;
+  position: absolute;
+  left: 9px;
+  top: 13.5px;
+  transition: transform 0.4s;
+}
+.faqIcon > span:last-child {
+  transform: rotate(90deg);
+}
+.faqOpen {
+  background: var(--ink);
+  color: white;
+}
+.faqOpen .faqIcon {
+  background: #fff3;
+}
+.faqOpen .faqIcon > span:last-child {
+  transform: rotate(180deg);
+}
+.faqAnswer {
+  overflow: hidden;
+}
+.faqAnswer p {
+  padding-top: 16px;
+  font-size: 16px;
+  line-height: 1.4;
+}
+@media (min-width: 810px) and (max-width: 1199px) {
+  .faqList {
+    max-width: 600px;
+  }
+  .faqItem {
+    padding: 16px;
+  }
+  .faqIcon {
+    width: 22px;
+    height: 22px;
+  }
+  .faqIcon > span {
+    left: 6px;
+    top: 10.5px;
+  }
+  .faqItem button {
+    font-size: 16px;
+  }
+  .faqAnswer p {
+    font-size: 14px;
+  }
+}
+@media (max-width: 809px) {
+  .faq {
+    padding: 40px 24px 56px;
+    gap: 32px;
+  }
+  .faqItem {
+    padding: 16px;
+    border-radius: 14px;
+  }
+  .faqItem button {
+    font-size: 16px;
+    gap: 12px;
+  }
+  .faqAnswer p {
+    font-size: 14px;
+    padding-top: 16px;
+  }
+  .faqIcon {
+    width: 22px;
+    height: 22px;
+  }
+  .faqIcon > span {
+    left: 6px;
+    top: 10.5px;
+  }
+}
+@media (max-width: 809px) {
+  /* The reference retains desktop spacing on the final FAQ row. */
+  .faqList > div:last-child .faqItem {
+    padding: 22px;
+  }
+  .faqList > div:last-child button {
+    gap: 20px;
+  }
+  .faqList > div:last-child .faqIcon {
+    width: 28px;
+    height: 28px;
+  }
+  .faqList > div:last-child .faqIcon > span {
+    left: 9px;
+    top: 13.5px;
+  }
+}

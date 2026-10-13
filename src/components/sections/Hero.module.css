@@ -1,0 +1,177 @@
+.hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 100px;
+  height: 100vh;
+  max-height: 1024px;
+  min-height: 700px;
+  padding: 12px 12px 12px 80px;
+}
+.navigation {
+  position: absolute;
+  left: 46px;
+  top: 42px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 56px;
+}
+.logo {
+  font-family: var(--font-heading);
+  font-size: 24px;
+  line-height: 1.2;
+  letter-spacing: -0.04em;
+}
+.navigation nav {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  font-size: 18px;
+}
+.navigation nav a {
+  transition: opacity 0.2s;
+}
+.navigation nav a:hover {
+  opacity: 0.6;
+}
+.heroContent {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  padding-top: 64px;
+}
+.heroCopy {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.heroActions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+.heroVisual {
+  width: 50%;
+  align-self: stretch;
+  background: var(--ink);
+  border-radius: 32px;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  overflow: clip;
+}
+.heroTracks {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  transform: translateY(24px);
+}
+.heroTicker {
+  --member-card-size: 298px;
+}
+@media (min-width: 1600px) {
+  .hero {
+    padding-left: 100px;
+  }
+}
+@media (min-width: 810px) and (max-width: 1199px) {
+  .hero {
+    height: auto;
+    max-height: none;
+    min-height: 0;
+    flex-direction: column;
+    gap: 32px;
+    padding: 170px 12px 12px;
+  }
+  .navigation {
+    top: 42px;
+    left: 52px;
+  }
+  .heroContent {
+    text-align: center;
+    width: 100%;
+    max-width: none;
+    padding: 64px 52px 0;
+    gap: 36px;
+    align-items: center;
+  }
+  .heroCopy,
+  .heroActions {
+    width: 100%;
+    max-width: 610px;
+  }
+  .heroActions {
+    align-items: center;
+  }
+  .heroVisual {
+    width: 100%;
+    height: 554px;
+    padding: 32px 0;
+    align-self: auto;
+  }
+  .heroTracks {
+    gap: 12px;
+    transform: none;
+  }
+  .heroTicker {
+    --member-card-size: 239px;
+  }
+}
+@media (max-width: 809px) {
+  .hero {
+    min-height: 0;
+    height: auto;
+    max-height: none;
+    padding: 60px 8px 8px;
+    flex-direction: column;
+    gap: 32px;
+  }
+  .navigation {
+    left: 24px;
+    top: 24px;
+  }
+  .logo {
+    font-size: 20px;
+  }
+  .navigation nav {
+    display: none;
+  }
+  .heroContent {
+    padding: 64px 16px 0;
+    width: 100%;
+    gap: 24px;
+    text-align: center;
+  }
+  .heroActions {
+    align-items: stretch;
+  }
+  .heroActions a {
+    display: flex;
+    width: 100%;
+  }
+  .heroActions :global(.eyebrow) {
+    padding: 0;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+  .heroActions a {
+    min-height: 47px;
+  }
+  .heroVisual {
+    width: 100%;
+    height: 484px;
+    border-radius: 20px;
+  }
+  .heroTracks {
+    gap: 12px;
+    transform: translateY(24px);
+  }
+  .heroTicker {
+    --member-card-size: 212px;
+  }
+}

@@ -1,0 +1,105 @@
+.paragraphs {
+  display: flex;
+  flex-direction: column;
+  gap: 19px;
+}
+.problem {
+  position: relative;
+}
+.problem {
+  margin-top: 24px;
+  padding: 100px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 64px;
+  background: var(--paper);
+  border-bottom: 2px solid #c2c7c3;
+}
+.problemCopy {
+  width: min(830px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  text-align: center;
+}
+.photoTicker {
+  width: 100%;
+}
+.problemPhoto {
+  width: 288px;
+  height: 288px;
+  object-fit: cover;
+  border-radius: 20px;
+}
+.callout {
+  position: absolute;
+  bottom: -29px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ink);
+  color: var(--white);
+  border: 2px solid #c2c7c3;
+  padding: 16px 20px;
+  border-radius: 16px;
+  white-space: nowrap;
+  z-index: 2;
+  font-size: 12px;
+}
+@media (min-width: 1600px) {
+  .problemPhoto {
+    width: 320px;
+    height: 320px;
+  }
+}
+@media (min-width: 810px) and (max-width: 1199px) {
+  .problem {
+    padding: 60px 0;
+    gap: 32px;
+  }
+  .problemCopy {
+    max-width: 600px;
+  }
+  .problemPhoto {
+    width: 240px;
+    height: 240px;
+  }
+}
+@media (max-width: 809px) {
+  .problem {
+    padding: 64px 0 70px;
+    gap: 32px;
+  }
+  .problemCopy {
+    padding: 0 24px;
+  }
+  .problemCopy br {
+    display: none;
+  }
+  .problemPhoto {
+    width: 216px;
+    height: 216px;
+    border-radius: 16px;
+  }
+  .callout {
+    max-width: calc(100% - 48px);
+    white-space: normal;
+    text-align: center;
+    padding: 12px;
+    bottom: -34px;
+    font-size: 10px;
+    border-radius: 12px;
+  }
+}
+.illustrationNote {
+  font-size: 12px;
+  color: #526159;
+  margin-top: -40px;
+  text-align: center;
+  padding: 0 24px;
+}
+@media (max-width: 809px) {
+  .illustrationNote {
+    margin-top: -16px;
+  }
+}

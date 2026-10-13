@@ -1,0 +1,141 @@
+﻿.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  scroll-margin-top: 24px;
+}
+.plans {
+  padding: 0;
+  margin: 0;
+  border: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.plans legend {
+  margin-bottom: 14px;
+  font-family: var(--font-heading);
+  font-size: 20px;
+}
+.plan {
+  position: relative;
+  border: 1px solid #ffffff55;
+  border-radius: 18px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  cursor: pointer;
+}
+.plan input {
+  accent-color: var(--accent);
+  width: 18px;
+  height: 18px;
+}
+.selected {
+  border-color: var(--accent);
+  background: #e9e7780d;
+}
+.plan strong {
+  font-family: var(--font-heading);
+  font-size: 34px;
+  line-height: 1.2;
+}
+.plan small {
+  font-size: 14px;
+  font-family: var(--font-body);
+  font-weight: 400;
+}
+.plan > span:last-child {
+  font-size: 12px;
+  color: #e1e7e1;
+}
+.fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.fields label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+}
+.fields label:last-child {
+  grid-column: 1/-1;
+}
+.fields label span {
+  color: #c2d2c8;
+}
+.fields input {
+  width: 100%;
+  min-width: 0;
+  background: #fff;
+  color: var(--ink);
+  border: 1px solid #b7c7bd;
+  border-radius: 8px;
+  padding: 12px;
+  min-height: 48px;
+  font: inherit;
+  font-size: 16px;
+}
+.fields input:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+.consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 12px;
+  color: #e1e7e1;
+  cursor: pointer;
+}
+.consent input {
+  margin-top: 3px;
+  width: 20px;
+  height: 20px;
+  flex: none;
+  accent-color: var(--accent);
+}
+.consent a,
+.error a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.submit {
+  border: 0;
+  width: 100%;
+  cursor: pointer;
+}
+.submit:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+.mode,
+.status {
+  font-size: 12px;
+  color: #dbe7df;
+}
+.status:empty {
+  display: none;
+}
+.error {
+  background: #fff1e9;
+  color: #6b2419;
+  padding: 16px;
+  border-radius: 12px;
+  font-size: 14px;
+}
+.error p {
+  margin-bottom: 8px;
+}
+@media (max-width: 809px) {
+  .plans,
+  .fields {
+    grid-template-columns: 1fr;
+  }
+  .plan {
+    padding: 20px;
+  }
+}
