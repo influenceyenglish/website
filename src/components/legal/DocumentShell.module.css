@@ -1,10 +1,11 @@
-﻿.header {
+.header {
   padding: 28px var(--page-gutter);
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 20px;
-  border-bottom: 1px solid #042d2b22;
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--primary-dark) 13%, transparent);
 }
 .header > a:first-child {
   font-family: var(--font-heading);
@@ -30,7 +31,7 @@
   max-width: 720px;
 }
 .notice {
-  background: #e9e77866;
+  background: color-mix(in srgb, var(--secondary-light) 40%, transparent);
   padding: 20px;
   border-radius: 16px;
   font-size: 14px;

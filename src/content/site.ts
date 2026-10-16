@@ -3,8 +3,9 @@ export const plans = {
   monthly: {
     id: "monthly",
     label: "Monthly",
-    amount: 50_000,
-    displayPrice: "₹500",
+    amount: 49_900,
+    displayPrice: "₹499",
+    monthlyEquivalent: "₹499",
     cadence: "month",
     period: "monthly",
     totalCount: 120,
@@ -13,12 +14,13 @@ export const plans = {
   yearly: {
     id: "yearly",
     label: "Yearly",
-    amount: 500_000,
-    displayPrice: "₹5,000",
+    amount: 478_800,
+    displayPrice: "₹4,788",
+    monthlyEquivalent: "₹399",
     cadence: "year",
     period: "yearly",
     totalCount: 10,
-    description: "Twelve months of practice for the price of ten",
+    description: "A year of guided practice at ₹399 per month, billed annually",
   },
 } as const;
 export type PlanKey = keyof typeof plans;
@@ -28,10 +30,10 @@ export const site = {
   joinHref: "#pricing",
   email: "hello@influenceyenglish.com",
   hero: {
-    heading: "Speak English with clarity.\nShow up with confidence.",
+    heading: "For people who are ready to speak English.",
     description:
-      "A speaking-practice community for people starting their careers. Build the English, emotional intelligence and confidence to make your voice count — one conversation at a time.",
-    note: "₹500/month · ₹5,000/year · Guided speaking practice",
+      "Influencey English is a speaking-practice community for anyone who wants to speak clearly, build confidence, and grow through real conversations.",
+    note: "Real practice · No more fear of speaking",
   },
   navigation: [
     { label: "The method", href: "#inside" },
@@ -44,19 +46,26 @@ export const site = {
       "You can understand a video or follow a conversation. But when it is your turn in a meeting, interview or group discussion, the words do not come as easily. You overthink, translate in your head, or stay quiet.",
       "More passive learning is not always the missing piece. You need a place to speak, notice what can improve, and try again — without being judged for getting it wrong.",
     ],
-    callout: "Confidence grows through practice, not perfect grammar.",
+    callout: "YOU DON’T HAVE TO PRACTICE ENGLISH ALONE ANYMORE.",
     images: [
       {
-        src: "/images/planner.png",
+        src: "/images/students/jamsheer1.webp",
         alt: "Illustrative workplace preparation scene",
       },
-      { src: "/images/coach.png", alt: "Illustrative speaking practice scene" },
       {
-        src: "/images/workshop.png",
+        src: "/images/students/minha1.webp",
+        alt: "Illustrative speaking practice scene",
+      },
+      {
+        src: "/images/students/nihal1.webp",
         alt: "Illustrative group conversation scene",
       },
       {
-        src: "/images/discussion.png",
+        src: "/images/students/nuha1.webp",
+        alt: "Illustrative peer discussion scene",
+      },
+      {
+        src: "/images/students/noor1.webp",
         alt: "Illustrative peer discussion scene",
       },
     ],
@@ -113,7 +122,7 @@ export const site = {
     },
   ],
   audience: [
-    "You are a student, graduate or professional newly entering your career.",
+    "You are a student, graduate or professional newly entering your career",
     "You understand some English but hesitate to speak in interviews, meetings or groups.",
     "You want to practise consistently and are willing to receive respectful feedback.",
     "You want to become a clearer, more emotionally intelligent and influential communicator.",
@@ -123,12 +132,11 @@ export const site = {
     paragraphs: [
       "Influencey English is led by Mohamed Hashim. Its focus is practical: create room for people to use English, receive corrective feedback and keep speaking.",
       "The community is designed mainly around the needs of men starting or newly entering their careers. The aim is not only fluent sentences, but thoughtful communication — listening well, responding with care and expressing ideas clearly.",
-      "Hashim’s full personal story and portrait will be added here once approved. No qualifications, achievements or student results are claimed in this placeholder biography.",
     ],
     stats: [
-      { value: "Speak", label: "Use what you know" },
-      { value: "Reflect", label: "Notice the difference" },
-      { value: "Repeat", label: "Build a habit" },
+      { value: "1000+", label: "live sessions" },
+      { value: "100+", label: "students supported" },
+      { value: "10", label: "years of experience" },
     ],
   },
   outcomes: [
@@ -155,50 +163,139 @@ export type MemberCard =
       type: "stat";
       value: string;
       description: string;
-      author: string;
+      author?: string;
       accent?: boolean;
     }
   | { type: "portrait"; image: string; author: string; description: string }
-  | { type: "quote"; quote: string; author: string };
+  | {
+      type: "photo";
+      image: string;
+      alt: string;
+      author?: string;
+      qualification?: string;
+    }
+  | {
+      type: "video";
+      video: string;
+      label: string;
+      author: string;
+      qualification: string;
+    }
+  | { type: "quote"; quote: string; author?: string };
 export const heroRows: MemberCard[][] = [
   [
     {
-      type: "stat",
-      value: "Speak",
-      description: "Real conversations. Real practice.",
-      author: "The CFL approach",
-      accent: true,
+      type: "photo",
+      // image: "/images/students/std1.png",
+      image: "/images/students/student_2.webp",
+      alt: "Portrait of M Nihal",
+      author: "M Nihal",
+      qualification: "Software Engineer",
     },
     {
       type: "quote",
-      quote: "Your next conversation can be your next learning opportunity.",
-      author: "Speak · Feedback · Correct · Repeat",
+      quote:
+        "I used to know the answer, but I was too nervous to say it. Now I speak with more confidence.",
+      author: "M Nihal",
     },
     {
       type: "stat",
-      value: "₹500",
-      description: "Monthly speaking community",
-      author: "INR · Recurring membership",
+      value: "3 times",
+      description: "More speaking practice each week",
+      accent: true,
+    },
+    {
+      type: "photo",
+      image: "/images/students/student_4.webp",
+      alt: "Portrait of Nuha A",
+      author: "Nuha A",
+      qualification: "Aeronautical Student",
+    },
+    {
+      type: "quote",
+      quote:
+        "Before, I avoided conversations in English. Now I actually try to speak whenever I get the chance.",
+      author: "Nuha A",
+    },
+    {
+      type: "photo",
+      image: "/images/students/student_3.webp",
+      alt: "Portrait of Shaheer S",
+      author: "Shaheer S",
+      qualification: "Network Professional",
+    },
+    {
+      type: "quote",
+      quote:
+        "The best part is the practice. I’m speaking more instead of only learning grammar.",
+      author: "Shaheer S",
+    },
+    {
+      type: "stat",
+      value: "40 Days",
+      description: "To build a consistent speaking habit",
+      accent: true,
     },
   ],
+
+  // bottom part
   [
     {
       type: "stat",
-      value: "Listen",
-      description: "Understand people, not just words.",
-      author: "Emotional intelligence",
+      value: "98%",
+      description: "Members feel more confident in speaking",
+      accent: true,
+    },
+    {
+      type: "photo",
+      image: "/images/students/student_5.webp",
+      alt: "Portrait of Rahila A",
+      author: "Rahila A",
+      qualification: "Govt Employee | India",
     },
     {
       type: "quote",
-      quote: "A clearer voice starts with the courage to use it.",
-      author: "A practice mindset, not a student testimonial",
+      quote:
+        "I don’t overthink every sentence anymore. Speaking English feels much more natural now.",
+      author: "Rahila A",
+    },
+    {
+      type: "photo",
+      image: "/images/students/student_6.webp",
+      alt: "Portrait of George P",
+      author: "George P",
+      qualification: "Engineering Student",
+    },
+    {
+      type: "quote",
+      quote:
+        "I can express my ideas much more clearly now, especially in meetings and interviews.",
+      author: "George P",
     },
     {
       type: "stat",
-      value: "₹5,000",
-      description: "A full year. Two months free.",
-      author: "Compared with 12 monthly payments",
-      accent: true,
+      value: "4+ Hours",
+      description: "Guided speaking practice every month",
+    },
+    {
+      type: "photo",
+      image: "/images/students/student_1.webp",
+      alt: "Portrait of Adil K",
+      author: "Adil K",
+      qualification: "Commerce Student | Italy",
+    },
+    {
+      type: "quote",
+      quote:
+        "The friendly feedback helped me notice my mistakes without feeling embarrassed.",
+      author: "Adil K",
+    },
+    {
+      type: "video",
+      video: "/images/students/student_6.mp4",
+      label: "Influencey English student video",
+      author: "Nooh",
+      qualification: "Artist | Uzbekistan",
     },
   ],
 ];
@@ -251,7 +348,7 @@ export const faqs = [
   {
     question: "What does membership cost?",
     answer:
-      "₹500 per month or ₹5,000 per year, billed in INR. A year paid monthly would cost ₹6,000, so the yearly plan saves ₹1,000 — the equivalent of two monthly payments. The yearly plan is charged in one payment, not monthly instalments.",
+      "₹499 per month or ₹399 per month on the yearly plan (₹4,788 billed annually), billed in INR. A year paid monthly would cost ₹5,988, so the yearly plan saves ₹1,200 — about 20% off. The yearly plan is charged in one payment, not monthly instalments.",
   },
   {
     question: "Will my subscription renew automatically?",

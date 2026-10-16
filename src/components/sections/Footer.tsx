@@ -20,7 +20,7 @@ export function Footer() {
           ))}
         </nav>
       </div>
-      <div className={styles.business}>
+      {/* <div className={styles.business}>
         <p>Influencey English · Operated by {business.operator}</p>
         <p>Legal/business name: {business.legalName}</p>
         <address>{business.address}</address>
@@ -29,7 +29,7 @@ export function Footer() {
           <a href={business.phoneHref}>{business.phone}</a>
         </p>
         <p>Online English-speaking practice community · INR subscriptions</p>
-      </div>
+      </div> */}
       <p className={styles.copyright}>© 2026 Influencey English</p>
       <p className={styles.wordmark} aria-hidden="true">
         Influencey

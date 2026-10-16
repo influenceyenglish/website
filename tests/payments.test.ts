@@ -43,7 +43,7 @@ class Gateway implements PaymentGateway {
   };
   payment: ProviderPayment = {
     id: "pay_member",
-    amount: 50000,
+    amount: 49900,
     currency: "INR",
     status: "captured",
     amount_refunded: 0,
@@ -54,7 +54,7 @@ class Gateway implements PaymentGateway {
     subscription_id: "sub_member",
     payment_id: "pay_member",
     status: "paid",
-    amount_paid: 50000,
+    amount_paid: 49900,
     currency: "INR",
     billing_end: this.end,
   };
@@ -63,7 +63,7 @@ class Gateway implements PaymentGateway {
       id,
       period: id === "plan_monthly" ? "monthly" : "yearly",
       interval: 1,
-      item: { amount: id === "plan_monthly" ? 50000 : 500000, currency: "INR" },
+      item: { amount: id === "plan_monthly" ? 49900 : 478800, currency: "INR" },
     };
   }
   async createSubscription(
@@ -168,8 +168,8 @@ test("subscription service with the real SQL schema and transactional Postgres e
     };
     if (plan === "yearly") {
       gateway.remote.plan_id = "plan_yearly";
-      gateway.payment.amount = 500000;
-      gateway.invoice.amount_paid = 500000;
+      gateway.payment.amount = 478800;
+      gateway.invoice.amount_paid = 478800;
       gateway.end = Math.floor(Date.now() / 1000) + 365 * 86400;
       gateway.remote.current_end = gateway.end;
       gateway.invoice.billing_end = gateway.end;
@@ -303,7 +303,7 @@ test("subscription service with the real SQL schema and transactional Postgres e
         for (const mutation of [
           { amount: 100 },
           { currency: "USD" },
-          { amount: 500001 },
+          { amount: 478801 },
           { status: "authorized" },
           { amount_refunded: 100 },
         ]) {
@@ -414,7 +414,7 @@ test("subscription service with the real SQL schema and transactional Postgres e
       "a refund received before a late payment event prevents reactivation",
       async () => {
         const f = await fixture();
-        f.gateway.payment.amount_refunded = 50000;
+        f.gateway.payment.amount_refunded = 49900;
         const refund = event("refund", "payment.refunded");
         await f.service.webhook(refund, sign(refund), "evt_refund_first");
         f.gateway.payment.amount_refunded = 0;
@@ -433,7 +433,7 @@ test("subscription service with the real SQL schema and transactional Postgres e
         const f = await fixture();
         const raw = event("charge");
         await f.service.webhook(raw, sign(raw), "evt_original");
-        f.gateway.payment.amount_refunded = 50000;
+        f.gateway.payment.amount_refunded = 49900;
         const refund = event("refund", "payment.refunded");
         await f.service.webhook(refund, sign(refund), "evt_refund");
         await f.service.webhook(refund, sign(refund), "evt_refund");
@@ -455,7 +455,7 @@ test("subscription service with the real SQL schema and transactional Postgres e
           (await f.service.verify(input, sessionHash)).status,
           "active",
         );
-        f.gateway.payment.amount_refunded = 50000;
+        f.gateway.payment.amount_refunded = 49900;
         assert.equal(
           (await f.service.verify(input, sessionHash)).status,
           "not_active",

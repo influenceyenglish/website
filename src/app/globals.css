@@ -1,4 +1,7 @@
-﻿@import "../styles/tokens.css";
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+@import "../styles/tokens.css";
 @import "lenis/dist/lenis.css";
 * {
   box-sizing: border-box;
@@ -64,7 +67,7 @@ a {
 }
 button:focus-visible,
 a:focus-visible {
-  outline: 3px solid #aaa43d;
+  outline: 3px solid var(--primary-light);
   outline-offset: 5px;
 }
 img,
@@ -90,19 +93,19 @@ video {
   padding: 14px 22px;
   min-height: 50px;
   border-radius: 10px;
-  background: var(--accent);
+  background: var(--primary);
   font-family: var(--font-heading);
   font-size: 18px;
   line-height: 1.2;
   letter-spacing: -0.04em;
-  color: var(--ink);
+  color: var(--white);
   transition:
     transform 0.25s cubic-bezier(0.44, 0, 0.56, 1),
     background-color 0.25s;
 }
 .button:hover {
   transform: translateY(-2px);
-  background: #e1df6a;
+  background: var(--primary-dark);
 }
 .button:active {
   transform: scale(0.98);
@@ -113,11 +116,11 @@ video {
   font-size: 14px;
   font-weight: 600;
   line-height: 1.5;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.01em;
 }
 .muted {
   opacity: 1;
-  color: #52645b;
+  color: #9baaa3;
 }
 .video {
   width: 100%;

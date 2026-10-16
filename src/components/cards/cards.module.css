@@ -31,10 +31,13 @@
   background: var(--accent);
   border-color: var(--accent);
 }
+.photo,
 .portrait {
   position: relative;
   padding: 0;
 }
+.photo > img,
+.photo > video,
 .portrait > img {
   position: absolute;
   inset: 0;
@@ -42,11 +45,13 @@
   height: 100%;
   object-fit: cover;
 }
+.captioned::after,
 .portrait::after {
   content: "";
   position: absolute;
-  inset: 55% 0 0;
-  background: linear-gradient(transparent, #0008);
+  inset: 0;
+  background: linear-gradient(#00000008 30%, #0009 100%);
+  pointer-events: none;
 }
 .portraitLabel {
   position: absolute;
@@ -57,6 +62,46 @@
   z-index: 1;
   display: grid;
   gap: 4px;
+}
+.quoteCard {
+  margin: 0;
+  gap: 8px;
+  justify-content: flex-start;
+}
+.member .portraitLabel p {
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.35;
+  letter-spacing: normal;
+  opacity: 0.9;
+}
+.quoteMark {
+  height: 32px;
+  flex-shrink: 0;
+  font-family: Georgia, serif;
+  font-size: 72px;
+  line-height: 1;
+  color: var(--secondary);
+}
+.quoteCard blockquote {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(14px, 1.3vw, 18px);
+  line-height: 1.25;
+  letter-spacing: -0.04em;
+}
+.quoteCard figcaption {
+  margin-top: auto;
+  font-size: 14px;
+  line-height: 1.2;
+}
+.quoteCard figcaption::before {
+  content: "";
+  display: block;
+  width: 32px;
+  height: 3px;
+  margin-bottom: 8px;
+  background: var(--secondary);
 }
 .testimonial {
   border: 1px solid #e7e7e7;
@@ -70,7 +115,7 @@
   width: 100%;
 }
 .stars {
-  color: #ffba37;
+  color: var(--secondary);
   font-size: 22px;
   letter-spacing: 3px;
   line-height: 1;
@@ -100,6 +145,7 @@
     border-radius: 16px;
     padding: 20px;
   }
+  .member.photo,
   .member.portrait {
     padding: 0;
   }
@@ -118,6 +164,7 @@
     border-radius: 12px;
     padding: 16px;
   }
+  .member.photo,
   .member.portrait {
     padding: 0;
   }

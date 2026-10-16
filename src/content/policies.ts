@@ -77,7 +77,7 @@ export const policies = {
       {
         heading: "Price and eligibility",
         paragraphs: [
-          "You must be at least 18 and provide accurate contact information. The monthly plan is ₹500 per month; the yearly plan is ₹5,000 in one yearly payment, in INR. The yearly plan saves ₹1,000 compared with 12 monthly payments (two months free). These are the total membership prices; we add no separate checkout fee.",
+          "You must be at least 18 and provide accurate contact information. The monthly plan is ₹499 per month; the yearly plan is ₹4,788 in one yearly payment, in INR. The yearly plan saves ₹1,200 compared with 12 monthly payments (about 20% off). These are the total membership prices; we add no separate checkout fee.",
           "Recurring billing requires explicit authorisation through Razorpay. Billing, mandate duration and cancellation are described in the subscription policy. Terms and price changes require notice and any consent required by your payment provider.",
         ],
       },
@@ -147,7 +147,7 @@ export const policies = {
       {
         heading: "Plans and renewal",
         paragraphs: [
-          "Monthly: ₹500 charged every month. Yearly: ₹5,000 charged every year in one payment. Twelve monthly payments total ₹6,000, so the annual plan saves ₹1,000 (two months free). Both plans include the same benefits.",
+          "Monthly: ₹499 charged every month. Yearly: ₹4,788 charged every year in one payment. Twelve monthly payments total ₹5,988, so the annual plan saves ₹1,200 (about 20% off). Both plans include the same benefits.",
           "When you authorise AutoPay/recurring payment in Razorpay Checkout, charges recur at the chosen interval until cancellation, completion or expiry of the mandate. The prepared plans allow up to 120 monthly or 10 yearly billing cycles (10 years); after that a new authorisation is needed. There is no free trial or additional upfront fee in this offer.",
         ],
       },

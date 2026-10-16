@@ -4,7 +4,7 @@ A Next.js App Router funnel for an English-speaking practice community. The exis
 
 ## Offer and routes
 
-- ₹500/month or ₹5,000/year, in INR. The yearly plan saves ₹1,000 versus twelve monthly payments: two months free.
+- ₹499/month or ₹4,788/year, in INR. The yearly plan saves ₹1,200 versus twelve monthly payments: about 20% off.
 - Corrective Feedback Loop (CFL): speak, receive feedback, correct and repeat.
 - Audience: early-career adults, mainly men.
 - `/`: hero, labelled student-proof placeholders, speaking problem, CFL, benefits, audience, Hashim/about, outcomes, testimonials, pricing, FAQ, compliance footer.
@@ -29,6 +29,19 @@ npm start
 The funnel and policies render without credentials. Checkout fails closed with a helpful message until payment configuration and the database are ready.
 
 ## Content and design
+
+Tailwind CSS v4 utilities are available in any component alongside CSS Modules:
+
+```tsx
+<div className="flex gap-4 rounded-xl bg-white p-4 text-sm md:p-6">Content</div>
+```
+
+Preflight is intentionally disabled to preserve the existing global styles and
+CSS Modules. Existing unlayered CSS takes precedence over normal Tailwind
+utilities when they set the same property. For an intentional override, use the
+v4 trailing `!` modifier, for example
+`className={`${styles.card} p-4! md:p-6!`}`. Keep class names complete and literal
+so Tailwind can detect them; avoid constructing names such as `p-${size}`.
 
 | Edit                                                                      | Location                                                           |
 | ------------------------------------------------------------------------- | ------------------------------------------------------------------ |
@@ -96,8 +109,8 @@ Tables store checkout consent/session associations, provider lifecycle state, ve
 
 In Razorpay Dashboard **Test Mode**, enable Subscriptions and create:
 
-- Monthly plan: `period=monthly`, `interval=1`, `currency=INR`, `amount=50000` paise.
-- Yearly plan: `period=yearly`, `interval=1`, `currency=INR`, `amount=500000` paise.
+- Monthly plan: `period=monthly`, `interval=1`, `currency=INR`, `amount=49900` paise.
+- Yearly plan: `period=yearly`, `interval=1`, `currency=INR`, `amount=478800` paise.
 
 Set the corresponding IDs in the environment. No trial or extra upfront amount is configured. The API fetches each plan before creating a subscription and rejects incorrect amounts, currencies or intervals. Prepared mandates allow 120 monthly or 10 yearly cycles (at most ten years), as disclosed in the subscription policy.
 

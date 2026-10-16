@@ -1,121 +1,233 @@
-.invitation {
+﻿.invitation {
   position: relative;
+  isolation: isolate;
+  display: flex;
+  justify-content: center;
+  min-height: 480px;
+  padding: 80px 24px;
+  background: var(--primary-dark);
+  color: white;
+  text-align: center;
+  overflow: hidden;
 }
-.invitation {
+.invitationCopy {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 600px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 64px;
-  padding: 80px 100px;
-  background: var(--ink);
-  color: white;
-  text-align: center;
-  overflow: visible;
-  z-index: 1;
-}
-.invitationCopy {
-  display: flex;
-  flex-direction: column;
   gap: 24px;
+}
+.heading {
+  max-width: 580px;
+  font-size: 48px;
+  line-height: 1.1;
+  letter-spacing: -0.05em;
+}
+.subtitle {
+  max-width: 560px;
+  font-size: 18px;
+  line-height: 1.5;
 }
 .invitationActions {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 22px;
+  gap: 24px;
+  width: 100%;
+  margin-top: 32px;
 }
-.floatingQuote {
+.joinButton {
+  background: var(--accent);
+  color: var(--primary-dark);
+}
+.joinButton:hover {
+  background: color-mix(in srgb, var(--accent) 85%, white);
+  color: var(--primary-dark);
+}
+.note {
+  color: #ffffff73;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+.sideCards {
   position: absolute;
-  width: 360px;
-  right: -70px;
-  top: -80px;
-  text-align: left;
-  color: var(--ink);
+  inset: 0;
+  pointer-events: none;
 }
 .floatingPortrait {
   position: absolute;
-  left: -36px;
-  bottom: -40px;
-  --member-card-size: 298px;
+  width: 298px;
+  left: -44px;
+  top: 28px;
+  rotate: -4deg;
+}
+.portrait {
+  position: relative;
+  aspect-ratio: 1;
+  border: 1px solid #ffffff66;
+  border-radius: 20px;
+  overflow: hidden;
+  margin: 0;
+  text-align: left;
+}
+.portrait > img {
+  object-fit: cover;
+}
+.portrait::after {
+  content: "";
+  position: absolute;
+  inset: 35% 0 0;
+  background: linear-gradient(transparent, #000b);
+}
+.portrait figcaption {
+  position: absolute;
+  z-index: 1;
+  bottom: 20px;
+  left: 20px;
+  right: 16px;
+  display: grid;
+  gap: 4px;
+}
+.portrait strong {
+  font-family: var(--font-heading);
+  font-size: 22px;
+}
+.portrait span {
+  font-size: 15px;
+}
+.floatingQuote {
+  position: absolute;
+  width: 320px;
+  right: -44px;
+  bottom: 48px;
+  rotate: 8deg;
+}
+.quote {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+  margin: 0;
+  border-radius: 20px;
+  background: white;
+  color: var(--primary-dark);
+  text-align: left;
+}
+.stars {
+  color: var(--accent);
+  font-size: 26px;
+  line-height: 1;
+  letter-spacing: 2px;
+}
+.quote blockquote {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 20px;
+  line-height: 1.2;
+  letter-spacing: -0.04em;
+}
+.quote figcaption {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 15px;
+}
+.quote figcaption img {
+  flex-shrink: 0;
+  border-radius: 50%;
+  object-fit: cover;
 }
 @media (min-width: 810px) and (max-width: 1199px) {
-  .invitation {
-    padding: 80px 52px;
-    gap: 22px;
+  .invitationCopy {
+    max-width: 440px;
   }
-  .floatingQuote {
-    width: 280px;
-    right: -100px;
+  .heading {
+    font-size: 42px;
   }
   .floatingPortrait {
-    --member-card-size: 220px;
-    left: -80px;
+    width: 220px;
+    left: -64px;
+  }
+  .floatingQuote {
+    width: 240px;
+    right: -64px;
+  }
+  .quote {
+    padding: 20px;
+  }
+  .quote blockquote {
+    font-size: 18px;
   }
 }
 @media (max-width: 809px) {
   .invitation {
-    padding: 64px 24px 240px;
-    gap: 24px;
+    flex-direction: column;
+    align-items: center;
+    padding: 64px 24px 0;
   }
   .invitationCopy {
+    max-width: 600px;
     gap: 24px;
   }
+  .heading {
+    font-size: clamp(32px, 5.6vw, 44px);
+  }
+  .subtitle {
+    font-size: 16px;
+  }
   .invitationActions {
-    gap: 16px;
+    margin-top: 0;
+    gap: 24px;
+  }
+  .joinButton {
     width: 100%;
   }
-  .invitationActions :global(.eyebrow) {
-    font-size: 14px;
-    line-height: 1.4;
+  .note {
+    font-size: 12px;
   }
-  .invitationActions a {
-    width: 100%;
-  }
-  .desktopBreak {
-    display: none;
-  }
-  .floatingQuote {
-    width: 305px;
-    top: auto;
-    bottom: -60px;
-    right: -100px;
+  .sideCards {
+    position: relative;
+    inset: auto;
+    width: calc(100% + 48px);
+    height: clamp(240px, 48vw, 360px);
+    margin-top: 40px;
   }
   .floatingPortrait {
-    --member-card-size: 206px;
-    left: -40px;
-    bottom: -4px;
+    width: 44vw;
+    max-width: 298px;
+    left: -8px;
+    top: auto;
+    bottom: -12px;
   }
-}
-.invitation {
-  overflow: hidden;
-  padding: 80px var(--page-gutter);
-  gap: 40px;
-}
-.invitationCopy {
-  max-width: 760px;
-}
-.outcomes {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 32px;
-  max-width: 1200px;
-}
-.outcomes > div {
-  border: 1px solid #ffffff33;
-  border-radius: 20px;
-  padding: 28px;
-  text-align: left;
-  display: grid;
-  gap: 16px;
-}
-.outcomes h3 {
-  color: var(--accent);
-}
-@media (max-width: 809px) {
-  .invitation {
-    padding: 64px 24px;
+  .portrait figcaption {
+    bottom: 14px;
+    left: 14px;
   }
-  .outcomes {
-    grid-template-columns: 1fr;
+  .portrait strong {
+    font-size: 18px;
+  }
+  .portrait span {
+    font-size: 12px;
+  }
+  .floatingQuote {
+    width: clamp(230px, 54vw, 340px);
+    right: -40px;
+    top: 0;
+    bottom: auto;
+  }
+  .quote {
+    padding: 20px;
+    gap: 14px;
+  }
+  .quote blockquote {
+    font-size: clamp(16px, 2.7vw, 20px);
+  }
+  .quote figcaption {
+    font-size: 13px;
   }
 }

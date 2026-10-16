@@ -14,10 +14,10 @@ export default function Home() {
     <>
       <main id="main-content">
         <Hero />
-        <StudentProof />
+        {/* <StudentProof /> */}
         <Problem />
         <Overview />
-        <Benefits />
+        {/* <Benefits /> */}
         <Audience />
         <Founder />
         <Invitation />

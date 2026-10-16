@@ -67,12 +67,18 @@ try {
     await page.goto(base, { waitUntil: "networkidle" });
     if (scenario === "yearly")
       await page.locator('input[name="plan"][value="yearly"]').check();
+    await page
+      .getByText(scenario === "yearly" ? "₹399" : "₹499", { exact: true })
+      .waitFor();
+    if (scenario === "yearly")
+      assert((await page.locator("#join").innerText()).includes("₹4,788"));
     await page.getByLabel("Full name").fill("Browser test");
+    await page.locator('input[name="phone"]').fill("+919876543210");
     await page
       .getByLabel("Email for membership access")
       .fill("browser@example.test");
     await page.locator('input[name="consent"]').check();
-    await page.getByRole("button", { name: /Try test checkout/ }).click();
+    await page.getByRole("button", { name: /Continue to payment/ }).click();
     if (scenario === "dismiss") {
       await page.waitForURL("**/payment-cancelled");
       assert(
@@ -91,7 +97,7 @@ try {
       assert.equal(creates, 0);
       assert.equal(
         await page
-          .getByRole("button", { name: /Try test checkout/ })
+          .getByRole("button", { name: /Continue to payment/ })
           .isEnabled(),
         true,
       );

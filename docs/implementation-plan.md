@@ -8,7 +8,7 @@ The existing App Router project has reusable section components, CSS Modules, lo
 
 - [x] Preserve existing design/motion; responsive, semantic, accessible funnel.
 - [x] Twelve ordered sections: hero; clearly labelled student proof placeholders; speaking problem; CFL; membership benefits; audience; Hashim/about; outcomes; testimonials; INR monthly/yearly pricing; FAQ; compliance footer.
-- [x] ₹500/month, ₹5,000/year, ₹1,000 annual saving/two months free. Early-career audience, mainly men; effective, emotionally intelligent, influential communication.
+- [x] ₹499/month, ₹4,788/year, ₹1,200 annual saving/about 20% off. Early-career audience, mainly men; effective, emotionally intelligent, influential communication.
 - [x] Seven benefits: public speaking, weekly masterminds, resources, speaker identity, live opportunities, corrective feedback, community support.
 - [x] Typed central content and business/policy configuration; no invented student results or founder biography.
 - [x] Routes: /, /privacy-policy, /terms, /refund-policy, /subscription-policy, /contact, /payment-success, /payment-cancelled.

@@ -6,7 +6,7 @@ export function Founder() {
   return (
     <section id="about" className={styles.founder}>
       <div className={styles.founderContent}>
-        <p className="eyebrow">About Influencey English</p>
+        <p className="eyebrow">About</p>
         <AnimatedText>{site.founder.heading}</AnimatedText>
         <Reveal className={styles.paragraphs}>
           {site.founder.paragraphs.map((p) => (
@@ -23,14 +23,16 @@ export function Founder() {
           ))}
         </div>
       </div>
-      <div className={styles.founderVisual}>
-        <span className={styles.monogram} aria-hidden="true">
-          H.
-        </span>
-        <div>
-          <p className="eyebrow">Mohamed Hashim</p>
-          <p>Founder portrait &amp; personal story coming soon</p>
-        </div>
+      <div className={`rounded-2xl overflow-hidden`}>
+        <Reveal>
+          <img
+            src="/images/founder.webp"
+            alt="Influencey English founder, Haris"
+            width={400}
+            height={400}
+            className={`object-cover w-full h-full`}
+          />
+        </Reveal>
       </div>
     </section>
   );

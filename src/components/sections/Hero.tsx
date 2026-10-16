@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { site, heroRows } from "@/content/site";
 import { AnimatedText } from "@/components/motion/AnimatedText";
 import { Reveal } from "@/components/motion/Reveal";
@@ -16,7 +17,14 @@ export function Hero() {
           className={styles.logo}
           aria-label="Influencey English home"
         >
-          {site.name}
+          <Image
+            src="/images/influencey-english-logo.webp"
+            alt={site.name}
+            width={602}
+            height={146}
+            sizes="(max-width: 809px) 156px, 198px"
+            loading="eager"
+          />
         </a>
         <nav aria-label="Main navigation">
           {site.navigation.map((link) => (
@@ -56,7 +64,17 @@ export function Hero() {
               className={styles.heroTicker}
             >
               {row.map((card, i) => (
-                <MemberCard key={i} card={card} />
+                <MemberCard
+                  key={i}
+                  card={card}
+                  eager={
+                    card.type === "photo" &&
+                    heroRows.some(
+                      ([first]) =>
+                        first.type === "photo" && first.image === card.image,
+                    )
+                  }
+                />
               ))}
             </Ticker>
           ))}

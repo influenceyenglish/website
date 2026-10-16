@@ -35,9 +35,9 @@ export function Problem() {
           />
         ))}
       </Ticker>
-      <p className={styles.illustrationNote}>
+      {/* <p className={styles.illustrationNote}>
         Illustrative speaking and work scenarios ? not student photographs.
-      </p>
+      </p> */}
       <p className={`${styles.callout} eyebrow`}>{site.problem.callout}</p>
     </section>
   );

@@ -1,4 +1,4 @@
-﻿@font-face {
+@font-face {
   font-family: "Rothorn";
   src: url("/fonts/rothorn-demi.woff2") format("woff2");
   font-weight: 600;
@@ -17,12 +17,18 @@
   font-display: swap;
 }
 :root {
-  --ink: #042d2b;
+  --primary: #07569a;
+  --primary-light: #347bb7;
+  --primary-dark: #043b6b;
+  --secondary: #11aaa4;
+  --secondary-light: #73d2c5;
+  --background-tint: #eff8fa;
+  --ink: var(--primary-dark);
   --body-ink: #122426;
-  --paper: #f2efea;
+  --paper: var(--background-tint);
   --white: #fff;
-  --accent: #e9e778;
-  --muted: #042d2b66;
+  --accent: var(--secondary-light);
+  --muted: color-mix(in srgb, var(--primary-dark) 40%, transparent);
   --font-heading: "Rothorn", sans-serif;
   --font-body: "DM Sans", sans-serif;
   --page-gutter: 80px;

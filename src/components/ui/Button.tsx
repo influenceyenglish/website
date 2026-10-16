@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { site } from "@/content/site";
 
 export function Button({
-  children = "Join the community",
+  children = "Join Influencey",
   href = site.joinHref,
   className = "",
 }: {

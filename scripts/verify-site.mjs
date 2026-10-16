@@ -13,8 +13,11 @@ try {
     await p.waitForTimeout(1600);
     const body = await p.locator("body").innerText();
     assert(body.includes("Influencey English"));
-    assert(body.includes("₹500"));
-    assert(body.includes("₹5,000"));
+    assert(body.includes("₹499"));
+    await p.locator('input[name="plan"][value="yearly"]').check();
+    await p.getByText("₹399", { exact: true }).waitFor();
+    assert((await p.locator("#join").innerText()).includes("₹4,788"));
+    await p.locator('input[name="plan"][value="monthly"]').check();
     assert(body.includes("Corrective Feedback Loop"));
     assert(!/Kindred|Alex Monroe|1,400\+ members|47%|54\.5%/.test(body));
     assert.equal(await p.getByRole("heading", { level: 1 }).count(), 1);

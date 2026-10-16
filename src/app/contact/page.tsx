@@ -21,20 +21,10 @@ export default function ContactPage() {
         <p>
           <a href={business.phoneHref}>{business.phone}</a>
         </p>
-        <p>
-          We aim to acknowledge support, cancellation and refund requests within
-          2 business days. Please include the email used at checkout and your
-          subscription/payment reference. Never send card details, a UPI PIN or
-          an OTP.
-        </p>
+        
       </section>
-      <section>
-        <h2>Business & correspondence</h2>
-        <p>Operated by {business.operator}.</p>
-        <p>Legal/business name: {business.legalName}</p>
-        <address>{business.address}</address>
-      </section>
-      <section>
+      
+      {/* <section>
         <h2>Online delivery</h2>
         <p>
           Access instructions are sent to the checkout email within{" "}
@@ -46,7 +36,7 @@ export default function ContactPage() {
           {business.deliveryPlatform}. These will be confirmed before live
           enrolment.
         </p>
-      </section>
+      </section> */}
     </DocumentShell>
   );
 }

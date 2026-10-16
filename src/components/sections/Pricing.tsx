@@ -9,23 +9,18 @@ export function Pricing() {
   return (
     <section id="pricing" className={styles.pricing}>
       <div className={styles.pricingHeader}>
-        <p className="eyebrow">Invest in your voice</p>
-        <AnimatedText>
-          {"Same community.\nYour choice of commitment."}
-        </AnimatedText>
-        <p>Clear INR pricing. All seven membership benefits in either plan.</p>
+        {/* <p className="eyebrow">Invest in your voice</p> */}
+        <AnimatedText>{"One membership. Step into it"}</AnimatedText>
+        <p>
+          Clear INR pricing. Get access to everything below mentioned, cancel
+          whenever you want.
+        </p>
       </div>
       <div className={styles.pricingCard}>
         <div className={styles.priceSummary}>
           <CheckoutForm
             mode={process.env.RAZORPAY_MODE === "live" ? "live" : "test"}
           />
-          <p className={styles.billingNote}>
-            Recurring membership: ₹500 every month or ₹5,000 every year after
-            AutoPay authorisation, until cancelled or the mandate expires. The
-            yearly plan is billed in one payment. No additional fee is added by
-            us at checkout.
-          </p>
           <p className={styles.billingNote}>
             Online access details within {business.onboardingBusinessDays}{" "}
             business days of verified full payment.{" "}

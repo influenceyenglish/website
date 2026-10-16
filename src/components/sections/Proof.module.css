@@ -1,41 +1,88 @@
 ﻿.proof {
-  padding: 96px var(--page-gutter);
+  padding: 80px 0 96px;
   background: var(--paper);
+  color: var(--primary-dark);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 28px;
+  gap: 48px;
   text-align: center;
+  overflow: hidden;
 }
-.intro {
-  max-width: 620px;
+.heading {
+  padding: 0 24px;
+  font-size: 48px;
+  line-height: 1.1;
+  letter-spacing: -0.05em;
 }
-.testimonials {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 20px;
-  width: 100%;
-  max-width: 1400px;
-  margin-top: 16px;
-  text-align: left;
-}
-.story {
+.rows {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  border: 1px solid #042d2b22;
-  padding: 28px;
+  width: 100%;
+}
+.proofTicker {
+  width: 100%;
+}
+.proofTicker:first-child :global(.ticker__track) {
+  margin-left: -180px;
+}
+.proofTicker:nth-child(2) :global(.ticker__track) {
+  margin-left: -380px;
+}
+.card {
+  width: 360px;
+  height: 360px;
+  flex: none;
   border-radius: 24px;
+  overflow: hidden;
+  margin: 0;
+}
+.quoteCard {
   background: white;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 28px;
+  text-align: left;
 }
-.story > span {
-  color: #59635d;
-  font-size: 11px;
+.stars {
+  color: var(--accent);
+  font-size: 32px;
+  letter-spacing: 3px;
+  line-height: 1;
 }
-.placeholder {
-  color: #66736c;
-  font-size: 12px;
+.quoteCard blockquote {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 23px;
+  line-height: 1.25;
+  letter-spacing: -0.04em;
+}
+.quoteCard figcaption {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   margin-top: auto;
+  font-size: 16px;
+  line-height: 1.25;
+}
+.quoteCard figcaption img {
+  flex-shrink: 0;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.videoCard {
+  background: var(--primary-dark);
+}
+.joinButton {
+  background: var(--accent);
+  color: var(--primary-dark);
+  min-width: 180px;
+}
+.joinButton:hover {
+  background: color-mix(in srgb, var(--accent) 85%, white);
+  color: var(--primary-dark);
 }
 .studentProof {
   padding: 40px var(--page-gutter);
@@ -43,7 +90,8 @@
   grid-template-columns: 1fr 2fr auto;
   align-items: center;
   gap: 32px;
-  border-bottom: 1px solid #042d2b22;
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--primary-dark) 13%, transparent);
 }
 .studentProof > p:first-child {
   font-size: 18px;
@@ -54,10 +102,39 @@
 }
 @media (max-width: 809px) {
   .proof {
-    padding: 64px 24px;
+    padding: 56px 0 64px;
+    gap: 32px;
   }
-  .testimonials {
-    grid-template-columns: 1fr;
+  .heading {
+    font-size: clamp(30px, 5.6vw, 42px);
+  }
+  .rows {
+    gap: 16px;
+  }
+  .proofTicker:nth-child(2) :global(.ticker__track) {
+    margin-left: -300px;
+  }
+  .card {
+    width: 280px;
+    height: 280px;
+    border-radius: 20px;
+  }
+  .quoteCard {
+    padding: 22px;
+    gap: 18px;
+  }
+  .stars {
+    font-size: 26px;
+  }
+  .quoteCard blockquote {
+    font-size: 18px;
+  }
+  .quoteCard figcaption {
+    font-size: 14px;
+  }
+  .joinButton {
+    width: calc(100% - 32px);
+    max-width: 600px;
   }
   .studentProof {
     padding: 32px 24px;
