@@ -1,4 +1,5 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
 import "./globals.css";
 export const metadata: Metadata = {
@@ -34,6 +35,7 @@ export default function RootLayout({
         </a>
         {children}
         <SmoothScroll />
+        <Analytics />
         <noscript>
           <style>{`.animated-word { opacity:1 !important; filter:none !important; transform:none !important; } [style*="opacity:0"] { opacity:1 !important; transform:none !important; }`}</style>
         </noscript>

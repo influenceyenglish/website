@@ -170,7 +170,7 @@ export function CheckoutForm({ mode = "test" }: { mode?: "test" | "live" }) {
       <p className={styles.planNote}>
         {plan === "yearly"
           ? "₹4,788 billed annually. Save ₹1,200 a year — about 20% off."
-          : "A month of guided speaking practice. Build confidence, one conversation at a time."}{" "}
+          : "Join live speaking practice and grow with the community."}{" "}
         <Link href="/refund-policy">View refund terms</Link>.
       </p>
       <div className={styles.detailsCard}>

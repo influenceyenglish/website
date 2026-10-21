@@ -20,6 +20,7 @@
   "description": "",
   "private": true,
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "lenis": "^1.3.26",
     "motion": "^14.1.0",
     "next": "^16.4.0",
