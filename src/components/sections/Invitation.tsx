@@ -1,5 +1,5 @@
 ﻿import Image from "next/image";
-import { site, heroRows } from "@/content/site";
+import { site, heroRows, invitationStudent } from "@/content/site";
 import { AnimatedText } from "@/components/motion/AnimatedText";
 import { Reveal } from "@/components/motion/Reveal";
 import { Button } from "@/components/ui/Button";
@@ -9,7 +9,7 @@ const invitationButton = { label: "Let’s try a month", href: "#pricing" };
 
 export function Invitation() {
   const cards = heroRows.flat();
-  const student = cards.find((card) => card.type === "photo");
+  const student = invitationStudent;
   const quote = cards.find((card) => card.type === "quote");
   return (
     <section id="outcomes" className={styles.invitation}>

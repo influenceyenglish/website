@@ -182,15 +182,22 @@ export type MemberCard =
       qualification: string;
     }
   | { type: "quote"; quote: string; author?: string };
+export const invitationStudent = {
+  image: "/images/students/student_2.webp",
+  alt: "Portrait of M Nihal",
+  author: "M Nihal",
+  qualification: "Software Engineer",
+};
+
+// Reorder cards within each row to arrange videos, quotes, and stats together.
 export const heroRows: MemberCard[][] = [
   [
     {
-      type: "photo",
-      // image: "/images/students/std1.png",
-      image: "/images/students/student_2.webp",
-      alt: "Portrait of M Nihal",
+      type: "video",
+      video: "/videos/students/nihal-short.mp4",
+      label: "M Nihal, Influencey English student",
       author: "M Nihal",
-      qualification: "Software Engineer",
+      qualification: "",
     },
     {
       type: "quote",
@@ -205,11 +212,11 @@ export const heroRows: MemberCard[][] = [
       accent: true,
     },
     {
-      type: "photo",
-      image: "/images/students/student_4.webp",
-      alt: "Portrait of Nuha A",
+      type: "video",
+      video: "/videos/students/nuha-short.mp4",
+      label: "Nuha A, Influencey English student",
       author: "Nuha A",
-      qualification: "Aeronautical Student",
+      qualification: "",
     },
     {
       type: "quote",
@@ -218,17 +225,17 @@ export const heroRows: MemberCard[][] = [
       author: "Nuha A",
     },
     {
-      type: "photo",
-      image: "/images/students/student_3.webp",
-      alt: "Portrait of Shaheer S",
-      author: "Shaheer S",
-      qualification: "Network Professional",
+      type: "video",
+      video: "/videos/students/jamsheer-short.mp4",
+      label: "Jamsheer, Influencey English student",
+      author: "Jamsheer",
+      qualification: "",
     },
     {
       type: "quote",
       quote:
         "The best part is the practice. I’m speaking more instead of only learning grammar.",
-      author: "Shaheer S",
+      author: "Jamsheer",
     },
     {
       type: "stat",
@@ -247,56 +254,36 @@ export const heroRows: MemberCard[][] = [
       accent: true,
     },
     {
-      type: "photo",
-      image: "/images/students/student_5.webp",
-      alt: "Portrait of Rahila A",
-      author: "Rahila A",
-      qualification: "Govt Employee | India",
+      type: "video",
+      video: "/videos/students/minha-short.mp4",
+      label: "Minha, Influencey English student",
+      author: "Minha",
+      qualification: "",
     },
     {
       type: "quote",
       quote:
         "I don’t overthink every sentence anymore. Speaking English feels much more natural now.",
-      author: "Rahila A",
+      author: "Ayisha Minha",
     },
     {
-      type: "photo",
-      image: "/images/students/student_6.webp",
-      alt: "Portrait of George P",
-      author: "George P",
-      qualification: "Engineering Student",
+      type: "video",
+      video: "/videos/students/noor-short.mp4",
+      label: "Noor, Influencey English student",
+      author: "Noor",
+      qualification: "",
     },
     {
       type: "quote",
       quote:
         "I can express my ideas much more clearly now, especially in meetings and interviews.",
-      author: "George P",
+      author: "Muhammad Noor",
     },
-    {
-      type: "stat",
-      value: "4+ Hours",
-      description: "Guided speaking practice every month",
-    },
-    {
-      type: "photo",
-      image: "/images/students/student_1.webp",
-      alt: "Portrait of Adil K",
-      author: "Adil K",
-      qualification: "Commerce Student | Italy",
-    },
-    {
-      type: "quote",
-      quote:
-        "The friendly feedback helped me notice my mistakes without feeling embarrassed.",
-      author: "Adil K",
-    },
-    {
-      type: "video",
-      video: "/images/students/student_6.mp4",
-      label: "Influencey English student video",
-      author: "Nooh",
-      qualification: "Artist | Uzbekistan",
-    },
+    // {
+    //   type: "stat",
+    //   value: "4+ Hours",
+    //   description: "Guided speaking practice every month",
+    // },
   ],
 ];
 

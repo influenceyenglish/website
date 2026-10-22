@@ -19,9 +19,9 @@ export default function Home() {
         <Overview />
         {/* <Benefits /> */}
         <Audience />
-        <Founder />
-        <Invitation />
+        {/* <Invitation /> */}
         <Proof />
+        <Founder />
         <Pricing />
         <FAQ />
       </main>

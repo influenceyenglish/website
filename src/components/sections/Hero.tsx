@@ -64,17 +64,7 @@ export function Hero() {
               className={styles.heroTicker}
             >
               {row.map((card, i) => (
-                <MemberCard
-                  key={i}
-                  card={card}
-                  eager={
-                    card.type === "photo" &&
-                    heroRows.some(
-                      ([first]) =>
-                        first.type === "photo" && first.image === card.image,
-                    )
-                  }
-                />
+                <MemberCard key={i} card={card} />
               ))}
             </Ticker>
           ))}

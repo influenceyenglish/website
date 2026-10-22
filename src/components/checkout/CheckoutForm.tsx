@@ -240,7 +240,7 @@ export function CheckoutForm({ mode = "test" }: { mode?: "test" | "live" }) {
         <label className={styles.consent}>
           <input type="checkbox" name="consent" required disabled={busy} />
           <span>
-            I am 18+ and agree to the{" "}
+            I agree to the{" "}
             <Link href="/terms" target="_blank" rel="noopener">
               Terms
             </Link>
@@ -249,9 +249,9 @@ export function CheckoutForm({ mode = "test" }: { mode?: "test" | "live" }) {
               Privacy Policy
             </Link>
             ,{" "}
-            <Link href="/refund-policy" target="_blank" rel="noopener">
+            {/* <Link href="/refund-policy" target="_blank" rel="noopener">
               Refund
-            </Link>{" "}
+            </Link>{" "} */}
             and{" "}
             <Link href="/subscription-policy" target="_blank" rel="noopener">
               Subscription policies
@@ -297,7 +297,7 @@ export function CheckoutForm({ mode = "test" }: { mode?: "test" | "live" }) {
             <rect x="5" y="10" width="14" height="12" rx="2" />
             <path d="M8 10V6a4 4 0 0 1 8 0v4" />
           </svg>
-          Secure checkout. Cancel anytime.
+          Secure checkout
         </p>
         <p className={styles.mode}>
           {mode === "test"
