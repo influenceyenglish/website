@@ -1,64 +1,29 @@
-﻿# Payment operations
+# Payment operations
 
-This is a preparation/runbook, not a record of a real Razorpay transaction. Use restricted operator access. Never put API keys, webhook secrets or raw payment payloads in support tickets or browser code.
+The app uses only members, subscriptions and webhook_events through pg and DATABASE_URL. Resend sends internal failure follow-ups only. No outbox, admin dashboard or authentication is installed.
 
-## Before accepting members
+## Test setup
 
-Confirm the legal/business name, final community platform, live schedule, refund terms, data retention and the published two-business-day onboarding process. Enable the live gates only after Razorpay approval and a successful real Test Mode exercise. No automatic email/community account provisioning is connected yet.
+Use Test Mode credentials and matching INR plans: monthly 49900 paise, yearly 499900 paise, interval 1. Run npm run payments:check for read-only preflight. Use the connected Supabase project's transaction pooler URL for serverless, with TLS. The approved baseline is already applied. The legacy db:migrate command is disabled.
 
-## Onboarding queue
+## Verification and access
 
-The outbox is durable. Delivery must be based on the current paid ledger, not the event name alone. The following read-only query finds undelivered verified Live payments with a currently valid, unrefunded paid period:
+Save the pending member/subscription before calling Razorpay. Browser verification checks signatures and provider data, then waits for a signed webhook. Only full captured, invoice-backed payment webhooks set paid access. The status endpoint calculates access using paid_until, so expiry is enforced even if the member summary awaits reconciliation.
 
-```sql
-SELECT o.id, o.event_key, a.customer_name, a.customer_email,
-       a.subscription_id, a.plan, MAX(g.paid_until) AS paid_until
-FROM membership_outbox o
-JOIN checkout_attempts a
-  ON a.mode=o.mode AND a.subscription_id=o.subscription_id
-JOIN payment_grants g
-  ON g.mode=a.mode AND g.subscription_id=a.subscription_id
-LEFT JOIN payment_reversals r
-  ON r.mode=g.mode AND r.payment_id=g.payment_id
-WHERE o.mode='live' AND o.kind='payment_verified'
-  AND o.delivered_at IS NULL AND r.payment_id IS NULL
-GROUP BY o.id, o.event_key, a.id
-HAVING MAX(g.paid_until)>now()
-ORDER BY o.id;
-```
+Duplicate provider event IDs and hashes are checked transactionally. Captured facts and refund tombstones stay in webhook_events: do not delete them as temporary logs. Different events for the same payment do not add time; paid access is the maximum unrefunded period. A cancellation preserves prepaid time. Any partial refund conservatively excludes that payment period. Older lifecycle events cannot overwrite terminal state.
 
-Confirm the member identity/contact, grant the appropriate platform access, and send onboarding instructions. Only after successful delivery mark that outbox row delivered. When building an automated adapter, use the outbox event key as its idempotency key, verify current paid status again, and connect an authenticated member ID. Never provision real access from Test Mode rows.
+## Failure follow-up
 
-Process `payment_reversed` and `subscription_updated` entries as well: update the platform's access end date using the current ledger. A cancellation normally preserves the paid period. A refund excludes the refunded payment period; if another unrefunded period still covers today, it remains valid. Partial refunds conservatively revoke the affected period pending manual review. Do not delete grant/reversal history to change access.
+Verified failed payments with an invoice/subscription association set failure_email_state=pending once. Verified subscription.pending/subscription.halted events also queue one follow-up. After an accepted webhook, Next.js after() dispatches up to ten pending Test Mode emails through Resend. Missing RESEND_API_KEY defers email without affecting the webhook response. Run npm run emails:check after adding the key to dispatch existing pending/failed emails. Failed initial payments without an invoice association require manual provider reconciliation; the app does not guess ownership from a browser event. Test Mode emails are explicitly labelled TEST and addressed only to billing@influenceyenglish.com. Configure RESEND_FROM with a sender on a domain verified in Resend. The sent timestamp means API acceptance, not inbox delivery. Check delivery in Resend.
 
-There is no timer that logs a member out of a third-party community. Enforce the ledger's paid expiry in your final member portal/community integration, or schedule a daily operator expiry check until that integration exists.
+## Limits and live readiness
 
-## Cancellation and refund requests
+The demo throttle is bounded and per process; it is not shared across instances. Live browser payment requests fail closed until shared rate limiting is integrated. Payment records and webhook idempotency always persist in Postgres. Before live launch, implement shared throttling, fulfilment and a protected operations workflow.
 
-1. Verify that the requester controls the checkout email and can provide their subscription reference. Never ask for card details, UPI PINs, passwords or OTPs.
-2. Review the published policy and receipt. Action cancellations in Razorpay Dashboard, normally at cycle end, within the confirmed response timeline. Confirm the effective date to the member.
-3. For approved refunds, use the payment provider's refund workflow and the original payment method. Do not invent a refund from a client redirect.
-4. Check the resulting signed webhook, reversal record and outbox. Update delivery access against the current paid period and tell the member the refund reference/status.
+## Manual reconciliation
 
-Neither `/payment-cancelled` nor leaving the community cancels a mandate. The current API routes do not implement customer-initiated cancellation/refunds; support handles these in the Dashboard as disclosed in the policies.
+Review ambiguous creation timeouts in Razorpay using checkout_attempt_id notes; do not blindly create another subscription. Configure the public HTTPS /api/razorpay/webhook URL and matching secret in Razorpay Test Mode. Include subscription lifecycle, subscription.charged, payment.captured, payment.failed, payment.refunded and refund.processed events. Invalid signatures never write records. Provider/database failures return non-2xx for retry; a transaction failure rolls back all local event effects.
 
-## Webhook reliability
+## Email retry boundaries
 
-- Configure separate Test and Live URLs/secrets and all documented events.
-- Monitor non-2xx responses and response latency. Remote API/database failures return non-2xx so Razorpay can retry; transactions ensure partial writes do not mark an event complete.
-- Duplicate delivery is normal. The unique `(mode,event_id)` marker and hash prevent repeated effects. A reused ID with another payload is rejected and requires investigation.
-- Keep a previous webhook secret during a rotation while old events are being retried; remove it after the retry window and operator review.
-- Signature-invalid requests are never parsed or accepted. Do not manually reserialize a stored body and expect the same signature.
-- The normal provider calls should finish within Razorpay's acknowledgement window. Monitor latency on your deployment and add a durable authenticated inbox/worker if provider/network latency becomes material at scale; do not acknowledge before durable recording.
-
-## Uncertain checkout creation
-
-If Razorpay's create request times out or its response cannot be associated locally, the attempt is marked `uncertain`. Reusing the same attempt does not issue another provider POST. Check Razorpay Dashboard for the `checkout_attempt_id` note and reconcile the exact plan/subscription before inviting a retry. Do not blindly retry a provider create call after an ambiguous timeout. A signed owned-subscription webhook can recover the association from this note.
-
-## Missing invoice/period information
-
-A paid invoice must match the subscription and payment. `billing_end` is used for the grant; a signed `subscription.charged` snapshot can provide the period when necessary. An authorisation amount, missing invoice association or unknown period stays pending. Investigate/replay the correct provider event rather than granting access from a screenshot or editing a success URL.
-
-## Retention and database care
-
-Keep consent, transaction and webhook audit records according to the final retention policy. Expired rate-limit buckets may be removed periodically. Monitor connection count and use the provider's pooler. Back up the database and restrict operator permissions. Never use a temporary filesystem or per-instance Map for live deduplication/entitlements.
+Each subscription has one failure follow-up state. A committed sending claim and a stable Resend idempotency key prevent concurrent sends. Definite provider rejections become failed and can be retried. A timeout, unknown provider outcome or crash leaves sending for manual reconciliation in Resend; do not blindly reset it. Resend retains idempotency keys for 24 hours. No customer emails are sent and live email dispatch remains disabled.

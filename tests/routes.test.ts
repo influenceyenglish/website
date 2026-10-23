@@ -1,7 +1,7 @@
 ﻿import test from "node:test";
 import assert from "node:assert/strict";
 import { NextRequest } from "next/server";
-import { POST as create } from "../src/app/api/razorpay/create-subscription/route";
+import { POST as create } from "../src/app/api/razorpay/subscription/route";
 import {
   GET as status,
   POST as verify,
@@ -25,11 +25,12 @@ test("HTTP payment endpoints fail closed before external calls without configura
     assert.equal(
       (
         await create(
-          request("/api/razorpay/create-subscription", {
+          request("/api/razorpay/subscription", {
             requestId: crypto.randomUUID(),
             plan: "monthly",
             name: "Test member",
             email: "member@example.test",
+            phone: "+919876543210",
             consent: true,
           }),
         )
@@ -39,7 +40,7 @@ test("HTTP payment endpoints fail closed before external calls without configura
     assert.equal(
       (
         await create(
-          request("/api/razorpay/create-subscription", { plan: "attacker" }),
+          request("/api/razorpay/subscription", { plan: "attacker" }),
         )
       ).status,
       400,
@@ -47,11 +48,7 @@ test("HTTP payment endpoints fail closed before external calls without configura
     assert.equal(
       (
         await create(
-          request(
-            "/api/razorpay/create-subscription",
-            {},
-            "https://foreign.example",
-          ),
+          request("/api/razorpay/subscription", {}, "https://foreign.example"),
         )
       ).status,
       403,
@@ -59,7 +56,7 @@ test("HTTP payment endpoints fail closed before external calls without configura
     assert.equal(
       (
         await create(
-          request("/api/razorpay/create-subscription", {
+          request("/api/razorpay/subscription", {
             padding: "x".repeat(20000),
           }),
         )

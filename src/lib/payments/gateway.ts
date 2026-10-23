@@ -1,5 +1,6 @@
 ﻿import "server-only";
 import { z } from "zod";
+import Razorpay from "razorpay";
 import {
   PaymentError,
   type PaymentGateway,
@@ -40,36 +41,40 @@ const plan = z.object({
   item: z.object({ amount: z.number().int(), currency: z.string() }),
 });
 export class RazorpayGateway implements PaymentGateway {
-  constructor(private config: Pick<PaymentConfig, "keyId" | "keySecret">) {}
+  private client: Razorpay;
+  constructor(config: Pick<PaymentConfig, "keyId" | "keySecret">) {
+    this.client = new Razorpay({
+      key_id: config.keyId,
+      key_secret: config.keySecret,
+    });
+  }
   private async request<T>(
-    path: string,
+    operation: () => Promise<unknown>,
     schema: z.ZodType<T>,
-    body?: unknown,
   ): Promise<T> {
-    let response: Response;
+    let response: unknown;
+    let timeout: ReturnType<typeof setTimeout> | undefined;
     try {
-      response = await fetch(`https://api.razorpay.com/v1${path}`, {
-        method: body ? "POST" : "GET",
-        headers: {
-          Authorization: `Basic ${Buffer.from(`${this.config.keyId}:${this.config.keySecret}`).toString("base64")}`,
-          "Content-Type": "application/json",
-        },
-        body: body ? JSON.stringify(body) : undefined,
-        cache: "no-store",
-        signal: AbortSignal.timeout(8000),
-      });
+      // Never retry an uncertain create; the service persists the attempt so
+      // webhooks can reconcile a subscription created after this timeout.
+      response = await Promise.race([
+        operation(),
+        new Promise<never>((_, reject) => {
+          timeout = setTimeout(
+            () => reject(new Error("Provider timeout")),
+            8000,
+          );
+        }),
+      ]);
     } catch {
       throw new PaymentError(
         503,
         "The payment provider did not respond. Please check your payment status before retrying.",
       );
+    } finally {
+      clearTimeout(timeout);
     }
-    if (!response.ok)
-      throw new PaymentError(
-        502,
-        "The payment provider could not complete this request. Please contact support.",
-      );
-    const parsed = schema.safeParse(await response.json());
+    const parsed = schema.safeParse(response);
     if (!parsed.success)
       throw new PaymentError(
         502,
@@ -78,23 +83,26 @@ export class RazorpayGateway implements PaymentGateway {
     return parsed.data;
   }
   getPlan(id: string): Promise<ProviderPlan> {
-    return this.request(`/plans/${encodeURIComponent(id)}`, plan);
+    return this.request(() => this.client.plans.fetch(id), plan);
   }
   createSubscription(
     input: Parameters<PaymentGateway["createSubscription"]>[0],
   ): Promise<ProviderSubscription> {
-    return this.request("/subscriptions", subscription, input);
+    return this.request(
+      () => this.client.subscriptions.create(input),
+      subscription,
+    );
   }
   getSubscription(id: string): Promise<ProviderSubscription> {
     return this.request(
-      `/subscriptions/${encodeURIComponent(id)}`,
+      () => this.client.subscriptions.fetch(id),
       subscription,
     );
   }
   getPayment(id: string): Promise<ProviderPayment> {
-    return this.request(`/payments/${encodeURIComponent(id)}`, payment);
+    return this.request(() => this.client.payments.fetch(id), payment);
   }
   getInvoice(id: string): Promise<ProviderInvoice> {
-    return this.request(`/invoices/${encodeURIComponent(id)}`, invoice);
+    return this.request(() => this.client.invoices.fetch(id), invoice);
   }
 }

@@ -10,20 +10,17 @@ import styles from "./Hero.module.css";
 
 export function Hero() {
   return (
-    <section className={styles.hero} aria-label="Welcome to Influencey English">
+    <section className={styles.hero} aria-label="Welcome to Influency English">
       <Reveal className={styles.navigation} y={-60} trigger="mount">
-        <a
-          href="#"
-          className={styles.logo}
-          aria-label="Influencey English home"
-        >
+        <a href="#" className={styles.logo} aria-label="Influency English home">
           <Image
-            src="/images/influencey-english-logo.webp"
+            src="/images/influencey-english.svg"
             alt={site.name}
-            width={602}
-            height={146}
+            width={574}
+            height={329}
             sizes="(max-width: 809px) 156px, 198px"
             loading="eager"
+            unoptimized
           />
         </a>
         <nav aria-label="Main navigation">

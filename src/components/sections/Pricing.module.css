@@ -19,7 +19,7 @@
   max-width: 1200px;
   padding: 32px;
   background: var(--primary-dark);
-  color: white;
+  color: var(--white);
   border-radius: 32px;
   display: grid;
   grid-template-columns: 1.15fr 1fr;
@@ -36,7 +36,7 @@
   margin: 0;
   list-style: none;
   color: var(--primary-dark);
-  background: white;
+  background: var(--white);
   border-radius: 24px;
   padding: 32px;
   display: flex;
@@ -65,7 +65,7 @@
   padding: 0 4px;
   font-size: 12px;
   line-height: 1.5;
-  color: #c3d5e3;
+  color: var(--on-dark-muted);
 }
 .billingNote a {
   text-decoration: underline;
@@ -75,7 +75,7 @@
   max-width: 760px;
   text-align: center;
   font-size: 12px;
-  color: #657785;
+  color: var(--muted);
 }
 @media (min-width: 810px) and (max-width: 1199px) {
   .pricingCard {

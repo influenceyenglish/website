@@ -16,11 +16,11 @@ export function DocumentShell({
   return (
     <>
       <header className={styles.header}>
-        <Link href="/">Influencey English</Link>
+        <Link href="/">Influency English</Link>
         <Link href="/#pricing">View membership →</Link>
       </header>
       <main id="main-content" className={styles.main}>
-        <p className="eyebrow">Influencey English</p>
+        <p className="eyebrow">Influency English</p>
         <h1>{title}</h1>
         <p className={styles.description}>{description}</p>
         {draft && (

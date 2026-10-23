@@ -6,10 +6,14 @@ export function Video({
   src,
   className = "",
   label,
+  poster,
+  controls = false,
 }: {
   src: string;
   className?: string;
   label: string;
+  poster?: string;
+  controls?: boolean;
 }) {
   const ref = useRef<HTMLVideoElement>(null);
   useEffect(() => {
@@ -27,6 +31,8 @@ export function Video({
       ref={ref}
       className={`video ${className}`}
       src={src}
+      poster={poster}
+      controls={controls}
       muted
       loop
       playsInline

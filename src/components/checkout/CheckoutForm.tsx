@@ -62,7 +62,7 @@ export function CheckoutForm({ mode = "test" }: { mode?: "test" | "live" }) {
       await loadRazorpay();
       const requestId = attemptId(plan, email);
       setMessage("Preparing your subscription…");
-      const created = await post<Created>("/api/razorpay/create-subscription", {
+      const created = await post<Created>("/api/razorpay/subscription", {
         requestId,
         plan,
         name,
@@ -77,7 +77,6 @@ export function CheckoutForm({ mode = "test" }: { mode?: "test" | "live" }) {
         setMessage("Confirming your payment securely…");
         try {
           await post("/api/razorpay/verify", { requestId, ...response });
-          router.push("/payment-success");
         } catch (err) {
           setError(
             err instanceof Error
@@ -88,16 +87,22 @@ export function CheckoutForm({ mode = "test" }: { mode?: "test" | "live" }) {
             "If money was debited, check your payment status before retrying.",
           );
         } finally {
-          unlock();
+          // Checkout's callback is only a signal to check server records.
+          // Delayed verification must also lead to the pending/status page.
+          router.push("/payment-success");
         }
       };
       const razorpay = new window.Razorpay({
         key: created.keyId,
         subscription_id: created.subscriptionId,
-        name: "Influencey English",
-        description: `${selected.label} English-speaking community · ${selected.displayPrice}/${selected.cadence}${created.mode === "test" ? " · TEST MODE" : ""}`,
+        name: "Influency English",
+        description: `${selected.label} English-speaking community${created.mode === "test" ? " · TEST MODE" : ""}`,
         prefill: { name, email, ...(phone ? { contact: phone } : {}) },
-        theme: { color: "#043b6b" },
+        theme: {
+          color: getComputedStyle(document.documentElement)
+            .getPropertyValue("--brand-blue")
+            .trim(),
+        },
         handler: (response) => {
           void handler(response);
         },
@@ -164,12 +169,12 @@ export function CheckoutForm({ mode = "test" }: { mode?: "test" | "live" }) {
           >
             <path d="M20 3h-7L3 13l8 8L21 11V4a1 1 0 0 0-1-1Zm-3 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4Z" />
           </svg>
-          Save ₹1,200 with yearly
+          Save ₹989 with yearly
         </span>
       </div>
       <p className={styles.planNote}>
         {plan === "yearly"
-          ? "₹4,788 billed annually. Save ₹1,200 a year — about 20% off."
+          ? "₹4,999 billed annually. Save ₹989 a year — about 16.5% off."
           : "Join live speaking practice and grow with the community."}{" "}
         <Link href="/refund-policy">View refund terms</Link>.
       </p>
@@ -263,7 +268,7 @@ export function CheckoutForm({ mode = "test" }: { mode?: "test" | "live" }) {
           By continuing, you authorize AutoPay. {selected.displayPrice} will be
           charged {selected.period} after authorisation until cancelled or the
           mandate expires. Cancel anytime.
-          {plan === "yearly" && " ₹4,788 is charged in one yearly payment."}
+          {plan === "yearly" && " ₹4,999 is charged in one yearly payment."}
         </p>
         <button
           className={styles.submit}
@@ -271,7 +276,7 @@ export function CheckoutForm({ mode = "test" }: { mode?: "test" | "live" }) {
           disabled={busy}
           aria-busy={busy}
         >
-          {busy ? "Please wait…" : "Continue to payment"}
+          {busy ? "Opening secure payment…" : "Continue to payment"}
           <svg
             width="22"
             height="22"

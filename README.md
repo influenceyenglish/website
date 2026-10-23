@@ -4,13 +4,13 @@ A Next.js App Router funnel for an English-speaking practice community. The exis
 
 ## Offer and routes
 
-- ₹499/month or ₹4,788/year, in INR. The yearly plan saves ₹1,200 versus twelve monthly payments: about 20% off.
+- ₹499/month or ₹4,999/year, in INR. The yearly plan saves ₹989 versus twelve monthly payments: about 16.5% off.
 - Corrective Feedback Loop (CFL): speak, receive feedback, correct and repeat.
 - Audience: early-career adults, mainly men.
 - `/`: hero, labelled student-proof placeholders, speaking problem, CFL, benefits, audience, Hashim/about, outcomes, testimonials, pricing, FAQ, compliance footer.
 - `/privacy-policy`, `/terms`, `/refund-policy`, `/subscription-policy`, `/contact`.
 - `/payment-success` and `/payment-cancelled`: noindex result/help pages. A URL never activates membership.
-- `/api/razorpay/create-subscription`, `/api/razorpay/verify` (POST verification / GET status), `/api/razorpay/webhook`.
+- `/api/razorpay/subscription` (legacy alias: `/api/razorpay/create-subscription`), `/api/razorpay/verify` (POST verification / GET status), `/api/razorpay/webhook`.
 
 ## Run
 
@@ -60,7 +60,7 @@ Student proof, Hashim’s portrait and his detailed personal story are honest pl
 
 ## Policy/business details to confirm
 
-`business.ts` deliberately has `detailsConfirmed: false`, a legal/business name placeholder and a delivery platform/schedule placeholder. Policies are marked draft. The supplied operator name, address, phone and support email are included.
+`business.ts` contains the operator-confirmed individual merchant identity and community delivery details. Speaking/practice sessions are online, with timings shared after joining. Legal disclosures use the approved merchant name; public branding uses Influency English. Optional environment overrides are documented in the live payments guide.
 
 Provisional terms requiring owner confirmation:
 
@@ -83,34 +83,37 @@ Copy `.env.example` to `.env.local` and fill it locally. Never commit `.env.loca
 | `APP_URL`                          | Exact website origin allowed to initiate/verify checkout; no trailing path |
 | `RAZORPAY_MODE`                    | `test` by default; must agree with the key prefix                          |
 | `RAZORPAY_KEY_ID`                  | Your Test Mode key ID; returned to Checkout as a public key                |
+| `NEXT_PUBLIC_RAZORPAY_KEY_ID`      | Same public key ID as `RAZORPAY_KEY_ID`; mismatches are rejected           |
 | `RAZORPAY_KEY_SECRET`              | Server-only API/checkout verification secret                               |
 | `RAZORPAY_WEBHOOK_SECRET`          | Separate server-only webhook signing secret                                |
 | `RAZORPAY_PREVIOUS_WEBHOOK_SECRET` | Optional previous secret during webhook rotation/retries                   |
-| `RAZORPAY_MONTHLY_PLAN_ID`         | Test Mode monthly plan ID                                                  |
-| `RAZORPAY_YEARLY_PLAN_ID`          | Test Mode yearly plan ID                                                   |
+| `RAZORPAY_PLAN_MONTHLY`            | Test Mode monthly plan ID                                                  |
+| `RAZORPAY_PLAN_YEARLY`             | Test Mode yearly plan ID                                                   |
 | `DATABASE_URL`                     | Durable Postgres connection string                                         |
 | `RAZORPAY_ENABLE_LIVE`             | `false` until all go-live requirements are satisfied                       |
 
 Do not prefix secrets with `NEXT_PUBLIC_`. API and webhook secrets are different. Do not log raw payment requests, secrets or full provider payloads.
+
+The server uses the official `razorpay` SDK. Charge amounts and mandate limits live in `src/lib/payments/plans.ts`, which is server-only; public display text stays in `src/content/site.ts`. The canonical subscription endpoint and its legacy alias share validation and durable duplicate protection. The older `RAZORPAY_MONTHLY_PLAN_ID` and `RAZORPAY_YEARLY_PLAN_ID` names remain supported as fallbacks during migration.
 
 ### 2. Database
 
 Use a durable Postgres database (for example, a Vercel Marketplace Postgres integration) with a pooled, TLS-enabled connection URL appropriate to your provider. Use separate databases/credentials for Test and Live. Configure a small pool and a region close to the app.
 
 ```sh
-npm run db:migrate
+npm run payments:check
 ```
 
 This loads `.env.local` and applies `db/001_subscriptions.sql`. If the environment already supplies `DATABASE_URL` without a local file, run `node scripts/migrate.mjs` instead. The database migration is intentionally not run during the build.
 
-Tables store checkout consent/session associations, provider lifecycle state, verified payment periods, reversal tombstones, processed webhook IDs, a fulfilment outbox and rate limits. There is no in-memory or local-file entitlement fallback. Restrict database access and back up records according to your confirmed retention policy.
+Only members, subscriptions and webhook_events are used. The approved baseline in supabase/migrations is already applied to the connected project. The legacy db migration is retired. Webhook facts retain captured periods and refund tombstones. There is no in-memory or local-file entitlement fallback. Restrict database access and back up records according to your confirmed retention policy.
 
 ### 3. Test Mode plans
 
 In Razorpay Dashboard **Test Mode**, enable Subscriptions and create:
 
 - Monthly plan: `period=monthly`, `interval=1`, `currency=INR`, `amount=49900` paise.
-- Yearly plan: `period=yearly`, `interval=1`, `currency=INR`, `amount=478800` paise.
+- Yearly plan: `period=yearly`, `interval=1`, `currency=INR`, `amount=499900` paise.
 
 Set the corresponding IDs in the environment. No trial or extra upfront amount is configured. The API fetches each plan before creating a subscription and rejects incorrect amounts, currencies or intervals. Prepared mandates allow 120 monthly or 10 yearly cycles (at most ten years), as disclosed in the subscription policy.
 
@@ -147,7 +150,7 @@ A publicly reachable HTTPS endpoint is required. Do not point Razorpay at localh
 
 Use Razorpay’s current official test-payment instructions. Check the monthly and yearly flows, a successful full payment, authorisation-only/pending payment, failure/dismissal, renewal, cancellation, duplicate webhook delivery and refund.
 
-Confirm that the signed callback reaches `/verify`, the signed webhook is acknowledged, exactly one grant/outbox payment entry exists, and `/payment-success` reports **Test payment verified**. Test Mode must never deliver real paid community access.
+Confirm that the signed callback reaches `/verify`, the signed webhook is acknowledged, one event per provider event ID exists and paid status is correct, and `/payment-success` reports **Test payment verified**. Test Mode must never deliver real paid community access.
 
 No real credentials are included in this repository. Automated tests use synthetic fixtures and a mocked browser checkout; they are not evidence of a completed transaction with your Razorpay account.
 
@@ -155,17 +158,17 @@ No real credentials are included in this repository. Automated tests use synthet
 
 - The checkout record pins its provider plan ID and expected amount so existing renewals survive future plan configuration changes.
 - The server maps `monthly`/`yearly` to fixed environment plan IDs; the browser cannot supply a price, plan ID, cycle count or upfront fee.
-- Checkout requires explicit policy/age/recurring-payment consent. A secure HTTP-only SameSite cookie binds verification to the initiating browser. Checkout request UUIDs prevent repeated creation within that session. Same-origin checks, input/body limits and durable rate limits protect public POST handlers.
+- Checkout requires explicit policy/age/recurring-payment consent. A secure HTTP-only SameSite cookie binds verification to the initiating browser. Checkout request UUIDs prevent repeated creation within that session. Same-origin checks, input/body limits and a bounded per-instance Test Mode limiter protect public POST handlers.
 - Checkout HMAC is `payment_id|server_stored_subscription_id`, compared in constant time. The browser’s subscription ID must also match the stored record.
 - Full payment is independently fetched and checked for captured status, INR amount, refund state and a paid invoice tied to the stored subscription. Authorisation-only charges do not grant access.
 - Invoice `billing_end` defines the paid period. A signed `subscription.charged` snapshot can supply its period if the invoice omits it. A current subscription’s later period is never used to extend an old payment.
-- Webhooks are authenticated against the exact raw bytes before JSON parsing. `x-razorpay-event-id` and a payload hash provide durable deduplication. Event marker, grant/reversal, lifecycle and outbox writes commit atomically; errors roll back and return non-2xx for retry.
+- Webhooks are authenticated against the exact raw bytes before JSON parsing. `x-razorpay-event-id` and a payload hash provide durable deduplication. Event facts, subscription state and member summary writes commit atomically; errors roll back and return non-2xx for retry.
 - Refund tombstones prevent a delayed charge from restoring refunded access. Older lifecycle events cannot overwrite later/terminal state. Cancellation does not erase an already paid period.
 - Test/Live records are scoped separately. Redirect/query parameters never activate access. Status responses are bound to the browser session and expose no customer email or secret.
 
 ### Delivery is a real operational step
 
-The code prepares a durable **manual fulfilment outbox**, not a fictitious community connector or email sender. Until your delivery platform is confirmed, an authorised operator must process verified **Live** entries, send onboarding/access instructions within the published timeline, and mark them delivered. Test entries must be ignored for real access. An eventual authenticated delivery adapter can consume this outbox idempotently.
+No onboarding outbox or sender is installed. WhatsApp, email, admin and authentication remain deferred. Live browser payment requests are blocked until shared rate limiting is configured. Test Mode never delivers real access.
 
 A session status page is not an authenticated member portal. Before using the ledger to protect private courses, connect your actual authentication system and community account identifiers.
 
@@ -194,7 +197,9 @@ Set `BASE_URL` to test another running server. In PowerShell: `$env:BASE_URL='ht
 
 ## Go live on Vercel
 
-1. Confirm the legal/business name against KYC, the service platform/schedule, policies, delivery and support process. Replace placeholders in `business.ts`; set `detailsConfirmed: true` only after this work is complete.
+See [the live payments setup guide](docs/live-payments.md) for the exact environment template, database migration, read-only preflight command and webhook instructions.
+
+1. The operator-confirmed merchant identity and online delivery details are configured in `business.ts`. Optional business environment overrides are documented in the live setup guide; session timings can be shared after joining.
 2. Obtain Razorpay account/Subscriptions approval. Complete the real Test Mode checklist with your own keys and plans.
 3. Provision the production database, apply the schema, configure production secrets, create matching **Live** plan IDs and a **Live** webhook. Use your HTTPS production origin for `APP_URL` and `NEXT_PUBLIC_SITE_URL`.
 4. Set `RAZORPAY_MODE=live` and `RAZORPAY_ENABLE_LIVE=true`. The server refuses live checkout if the business/delivery placeholders or confirmation gate remain.

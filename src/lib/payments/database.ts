@@ -8,7 +8,10 @@ export function postgresDatabase(connectionString: string): Database {
     max: 5,
     connectionTimeoutMillis: 3000,
     idleTimeoutMillis: 10000,
+    query_timeout: 10000,
+    statement_timeout: 10000,
   });
+  // Queries use unnamed parameters; compatible with Supabase transaction pooling.
   const current = pool;
   return {
     query: async (text, values) => {

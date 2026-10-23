@@ -7,7 +7,7 @@
   align-items: center;
   gap: 48px;
   padding: 48px var(--page-gutter) 100px;
-  background: white;
+  background: var(--white);
 }
 .audienceVisual {
   height: 585px;

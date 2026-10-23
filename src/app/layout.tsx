@@ -8,21 +8,21 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_SITE_URL || "https://influenceyenglish.com",
   ),
   title: {
-    default: "Influencey English — Speak with confidence",
-    template: "%s | Influencey English",
+    default: "Influency English — Speak with confidence",
+    template: "%s | Influency English",
   },
   description:
-    "English-speaking practice for early-career professionals. Learn through the Corrective Feedback Loop. Join for ₹499/month or ₹4,788/year.",
+    "English-speaking practice for early-career professionals. Learn through the Corrective Feedback Loop. Join for ₹499/month or ₹4,999/year.",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     locale: "en_IN",
-    siteName: "Influencey English",
-    title: "Influencey English — Find your voice",
+    siteName: "Influency English",
+    title: "Influency English — Find your voice",
     description:
       "A speaking-practice community for effective, emotionally intelligent and influential communication.",
   },
-  twitter: { card: "summary", title: "Influencey English — Find your voice" },
+  twitter: { card: "summary", title: "Influency English — Find your voice" },
 };
 export default function RootLayout({
   children,

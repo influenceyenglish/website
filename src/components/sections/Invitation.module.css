@@ -6,7 +6,7 @@
   min-height: 480px;
   padding: 80px 24px;
   background: var(--primary-dark);
-  color: white;
+  color: var(--white);
   text-align: center;
   overflow: hidden;
 }
@@ -48,7 +48,7 @@
   color: var(--primary-dark);
 }
 .note {
-  color: #ffffff73;
+  color: var(--on-dark-muted);
   font-size: 14px;
   font-weight: 600;
   line-height: 1.4;
@@ -114,7 +114,7 @@
   padding: 24px;
   margin: 0;
   border-radius: 20px;
-  background: white;
+  background: var(--white);
   color: var(--primary-dark);
   text-align: left;
 }

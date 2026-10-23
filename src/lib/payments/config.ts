@@ -1,5 +1,5 @@
 ﻿import "server-only";
-import { business } from "@/content/business";
+import { getBusinessDetails } from "@/content/business";
 import { PaymentError, type CheckoutMode } from "./types";
 export type PaymentConfig = {
   mode: CheckoutMode;
@@ -12,15 +12,26 @@ export type PaymentConfig = {
   databaseUrl: string;
 };
 export function paymentConfig(): PaymentConfig {
+  const business = getBusinessDetails();
   const mode = process.env.RAZORPAY_MODE || "test";
   const {
-    RAZORPAY_KEY_ID: keyId,
-    RAZORPAY_KEY_SECRET: keySecret,
-    RAZORPAY_WEBHOOK_SECRET: webhookSecret,
-    RAZORPAY_MONTHLY_PLAN_ID: monthlyPlanId,
-    RAZORPAY_YEARLY_PLAN_ID: yearlyPlanId,
-    DATABASE_URL: databaseUrl,
+    RAZORPAY_KEY_ID,
+    RAZORPAY_KEY_SECRET,
+    RAZORPAY_WEBHOOK_SECRET,
+    NEXT_PUBLIC_RAZORPAY_KEY_ID,
+    DATABASE_URL,
   } = process.env;
+  const keyId = RAZORPAY_KEY_ID?.trim();
+  const keySecret = RAZORPAY_KEY_SECRET?.trim();
+  const webhookSecret = RAZORPAY_WEBHOOK_SECRET?.trim();
+  const publicKeyId = NEXT_PUBLIC_RAZORPAY_KEY_ID?.trim();
+  const databaseUrl = DATABASE_URL?.trim();
+  const monthlyPlanId = (
+    process.env.RAZORPAY_PLAN_MONTHLY || process.env.RAZORPAY_MONTHLY_PLAN_ID
+  )?.trim();
+  const yearlyPlanId = (
+    process.env.RAZORPAY_PLAN_YEARLY || process.env.RAZORPAY_YEARLY_PLAN_ID
+  )?.trim();
   if (
     (mode !== "test" && mode !== "live") ||
     !keyId ||
@@ -36,13 +47,25 @@ export function paymentConfig(): PaymentConfig {
     );
   if (
     !keyId.startsWith(`rzp_${mode}_`) ||
+    (publicKeyId !== undefined && publicKeyId !== keyId) ||
     !/^plan_[A-Za-z0-9]+$/.test(monthlyPlanId) ||
     !/^plan_[A-Za-z0-9]+$/.test(yearlyPlanId) ||
-    monthlyPlanId === yearlyPlanId
+    monthlyPlanId === yearlyPlanId ||
+    keySecret === keyId ||
+    webhookSecret === keySecret
   )
     throw new PaymentError(
       503,
       "Payment configuration needs review. Please contact support.",
+    );
+  if (
+    mode === "live" &&
+    process.env.VERCEL_ENV &&
+    process.env.VERCEL_ENV !== "production"
+  )
+    throw new PaymentError(
+      503,
+      "Live payments are only enabled on the production website.",
     );
   if (
     mode === "live" &&

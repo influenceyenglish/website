@@ -23,7 +23,7 @@
 }
 .logo img {
   display: block;
-  width: 198px;
+  width: 164px;
   height: auto;
 }
 .navigation nav {
@@ -139,7 +139,7 @@
     top: 24px;
   }
   .logo img {
-    width: 156px;
+    width: 128px;
   }
   .navigation nav {
     display: none;

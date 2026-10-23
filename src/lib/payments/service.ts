@@ -1,5 +1,6 @@
 ﻿import { business } from "@/content/business";
-import { plans, type PlanKey } from "@/content/site";
+import type { PlanKey } from "@/content/site";
+import { paymentPlans } from "./plans";
 import {
   PaymentError,
   webhookSchema,
@@ -39,7 +40,7 @@ export class PaymentService {
       sessionHash,
       business.policyVersion,
       this.planId(input.plan),
-      plans[input.plan].amount,
+      paymentPlans[input.plan].amount,
     );
     if (!claim.created) {
       if (new Date(claim.attempt.created_at).getTime() + 86400_000 < Date.now())
@@ -47,7 +48,7 @@ export class PaymentService {
           410,
           "This checkout attempt has expired. Contact support before starting again.",
         );
-      if (claim.attempt.expected_amount !== plans[input.plan].amount)
+      if (claim.attempt.expected_amount !== paymentPlans[input.plan].amount)
         throw new PaymentError(
           409,
           "Pricing has changed since this checkout started. Contact support before retrying.",
@@ -64,7 +65,7 @@ export class PaymentService {
       );
     }
     try {
-      const expected = plans[input.plan],
+      const expected = paymentPlans[input.plan],
         remotePlan = await this.gateway.getPlan(this.planId(input.plan));
       if (
         remotePlan.id !== this.planId(input.plan) ||
@@ -155,6 +156,7 @@ export class PaymentService {
     )
       return null;
     return {
+      invoiceId: invoice.id,
       paymentId: payment.id,
       subscriptionId: attempt.subscription_id!,
       amount: payment.amount,
@@ -199,18 +201,14 @@ export class PaymentService {
     );
     if (observedPayment.id !== input.razorpay_payment_id)
       throw new PaymentError(400, "Payment details do not match.");
-    if (observedPayment.amount_refunded > 0)
-      await this.store.recordReversal(
-        observedPayment.id,
-        "refund_detected_during_verification",
-      );
-    const grant = await this.inspectPayment(
+    // The browser callback never grants access: only verified webhooks persist paid periods.
+    // Inspect the invoice-backed payment here for validation, then wait for webhook reconciliation.
+    await this.inspectPayment(
       attempt,
       input.razorpay_payment_id,
       undefined,
       observedPayment,
     );
-    if (grant) await this.store.recordGrant(grant);
     await this.store.verifyAttempt(attempt.id, input.razorpay_payment_id);
     const refreshed = await this.store.findAttempt(attempt.id);
     return this.store.status(refreshed!);
@@ -260,6 +258,7 @@ export class PaymentService {
       id: eventId,
       hash: bodyHash,
       event: event.event,
+      eventAt: event.created_at,
     };
     const entity = event.payload.subscription?.entity;
     if (entity && event.event.startsWith("subscription.")) {
@@ -273,6 +272,13 @@ export class PaymentService {
           status: remote.status,
           eventAt: event.created_at,
         };
+        if (
+          (event.event === "subscription.pending" &&
+            remote.status === "pending") ||
+          (event.event === "subscription.halted" && remote.status === "halted")
+        ) {
+          work.failedPayment = { subscriptionId: remote.id };
+        }
         if (event.event === "subscription.charged" && event.payload.payment) {
           const grant = await this.inspectPayment(
             attempt,
@@ -283,7 +289,10 @@ export class PaymentService {
         }
       }
     }
-    if (event.event === "payment.captured" && event.payload.payment) {
+    if (
+      ["payment.captured", "payment.failed"].includes(event.event) &&
+      event.payload.payment
+    ) {
       const payment = await this.gateway.getPayment(
         event.payload.payment.entity.id,
       );
@@ -295,8 +304,18 @@ export class PaymentService {
           );
           const attempt = await this.ownedSubscription(remote);
           if (attempt) {
-            const grant = await this.inspectPayment(attempt, payment.id);
-            if (grant) work.grant = grant;
+            if (
+              event.event === "payment.failed" &&
+              payment.status === "failed"
+            ) {
+              work.failedPayment = {
+                id: payment.id,
+                subscriptionId: remote.id,
+              };
+            } else if (event.event === "payment.captured") {
+              const grant = await this.inspectPayment(attempt, payment.id);
+              if (grant) work.grant = grant;
+            }
           }
         }
       }
@@ -308,6 +327,11 @@ export class PaymentService {
       if (payment.amount_refunded > 0) {
         work.reversePaymentId = payment.id;
         work.reversalReason = "refund";
+        work.refund = {
+          amount: payment.amount,
+          amountRefunded: payment.amount_refunded,
+          invoiceId: payment.invoice_id,
+        };
       }
     }
     if (

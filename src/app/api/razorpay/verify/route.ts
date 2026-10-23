@@ -53,7 +53,13 @@ export async function GET(request: NextRequest) {
     const attempt = await service.boundAttempt(id.data, session.hash);
     requireFresh(attempt.created_at);
     await store.rateLimit(`status:${session.hash}`, 120);
-    return json(await store.status(attempt));
+    const paymentStatus = await store.status(attempt);
+    return json({
+      ...paymentStatus,
+      ...(paymentStatus.status === "active"
+        ? { studentName: attempt.customer_name }
+        : {}),
+    });
   } catch (error) {
     return errorResponse(error);
   }

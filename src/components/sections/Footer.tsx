@@ -21,7 +21,7 @@ export function Footer() {
         </nav>
       </div>
       {/* <div className={styles.business}>
-        <p>Influencey English · Operated by {business.operator}</p>
+        <p>Influency English · Operated by {business.operator}</p>
         <p>Legal/business name: {business.legalName}</p>
         <address>{business.address}</address>
         <p>
@@ -30,9 +30,9 @@ export function Footer() {
         </p>
         <p>Online English-speaking practice community · INR subscriptions</p>
       </div> */}
-      <p className={styles.copyright}>© 2026 Influencey English</p>
+      <p className={styles.copyright}>© 2026 Influency English</p>
       <p className={styles.wordmark} aria-hidden="true">
-        Influencey
+        Influency
       </p>
     </footer>
   );

@@ -14,7 +14,7 @@
   align-items: center;
   gap: 64px;
   background: var(--paper);
-  border-bottom: 2px solid #c2c7c3;
+  border-bottom: 2px solid var(--border-strong);
 }
 .problemCopy {
   width: min(830px, 100%);
@@ -26,11 +26,49 @@
 .photoTicker {
   width: 100%;
 }
-.problemPhoto {
-  width: 288px;
-  height: 288px;
-  object-fit: cover;
+.featureCard {
+  position: relative;
+  flex: 0 0 auto;
+  width: 400px;
+  aspect-ratio: 1.5;
+  overflow: hidden;
   border-radius: 20px;
+  isolation: isolate;
+  background: var(--primary-dark);
+}
+.problemPhoto {
+  object-fit: cover;
+}
+.featureCard::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    transparent 30%,
+    rgb(2 24 43 / 30%) 55%,
+    rgb(2 24 43 / 90%) 100%
+  );
+  pointer-events: none;
+}
+.featureCaption {
+  position: absolute;
+  inset: auto 24px 24px;
+  z-index: 1;
+  color: var(--white);
+}
+.featureCaption h3 {
+  max-width: 310px;
+  font-size: 23px;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+.featureCaption p {
+  margin-top: 8px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: rgb(255 255 255 / 88%);
 }
 .callout {
   position: absolute;
@@ -39,7 +77,7 @@
   transform: translateX(-50%);
   background: var(--ink);
   color: var(--white);
-  border: 2px solid #c2c7c3;
+  border: 2px solid var(--border-strong);
   padding: 16px 20px;
   border-radius: 16px;
   white-space: nowrap;
@@ -47,9 +85,8 @@
   font-size: 12px;
 }
 @media (min-width: 1600px) {
-  .problemPhoto {
-    width: 320px;
-    height: 320px;
+  .featureCard {
+    width: 440px;
   }
 }
 @media (min-width: 810px) and (max-width: 1199px) {
@@ -60,9 +97,8 @@
   .problemCopy {
     max-width: 600px;
   }
-  .problemPhoto {
-    width: 240px;
-    height: 240px;
+  .featureCard {
+    width: 360px;
   }
 }
 @media (max-width: 809px) {
@@ -76,10 +112,18 @@
   .problemCopy br {
     display: none;
   }
-  .problemPhoto {
-    width: 216px;
-    height: 216px;
+  .featureCard {
+    width: 300px;
     border-radius: 16px;
+  }
+  .featureCaption {
+    inset: auto 20px 20px;
+  }
+  .featureCaption h3 {
+    font-size: 20px;
+  }
+  .featureCaption p {
+    font-size: 12px;
   }
   .callout {
     max-width: calc(100% - 48px);
@@ -89,17 +133,5 @@
     bottom: -34px;
     font-size: 10px;
     border-radius: 12px;
-  }
-}
-.illustrationNote {
-  font-size: 12px;
-  color: #526159;
-  margin-top: -40px;
-  text-align: center;
-  padding: 0 24px;
-}
-@media (max-width: 809px) {
-  .illustrationNote {
-    margin-top: -16px;
   }
 }

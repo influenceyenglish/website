@@ -27,7 +27,7 @@ export function Founder() {
         <Reveal>
           <img
             src="/images/founder.webp"
-            alt="Influencey English founder, Haris"
+            alt="Influency English founder, Haris"
             width={400}
             height={400}
             className={`object-cover w-full h-full`}

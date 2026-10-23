@@ -7,7 +7,7 @@
   position: relative;
 }
 .founder {
-  background: white;
+  background: var(--white);
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 48px;
@@ -21,14 +21,14 @@
 }
 .founderVisual {
   height: 536px;
-  border: 1px solid #e1e1e1;
+  border: 1px solid var(--border);
   border-radius: 32px;
   overflow: hidden;
 }
 .divider {
   height: 2px;
   width: 100%;
-  background: #eee;
+  background: var(--primary-soft);
 }
 .stats {
   display: grid;

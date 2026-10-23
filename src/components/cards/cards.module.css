@@ -2,7 +2,7 @@
   width: var(--member-card-size, 298px);
   height: var(--member-card-size, 298px);
   flex: none;
-  border: 1px solid #d2d8d7;
+  border: 1px solid var(--border);
   border-radius: 20px;
   background: var(--white);
   padding: 24px;
@@ -104,9 +104,9 @@
   background: var(--secondary);
 }
 .testimonial {
-  border: 1px solid #e7e7e7;
+  border: 1px solid var(--border);
   border-radius: 20px;
-  background: white;
+  background: var(--white);
   padding: 24px;
   display: flex;
   flex-direction: column;

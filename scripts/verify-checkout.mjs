@@ -2,12 +2,13 @@
 import assert from "node:assert/strict";
 const browser = await chromium.launch({ channel: "chrome" });
 const base = process.env.BASE_URL || "http://127.0.0.1:3000";
-const createPath = "**/api/razorpay/create-subscription";
+const createPath = "**/api/razorpay/subscription";
 const verifyPath = "**/api/razorpay/verify*";
 try {
   for (const scenario of [
     "monthly",
     "yearly",
+    "pending",
     "dismiss",
     "verify-error",
     "load-error",
@@ -58,8 +59,9 @@ try {
         });
       return route.fulfill({
         json: {
-          status: "active",
+          status: scenario === "pending" ? "pending" : "active",
           mode: "test",
+          studentName: "Browser test",
           paidUntil: new Date(Date.now() + 28 * 86400000).toISOString(),
         },
       });
@@ -68,10 +70,10 @@ try {
     if (scenario === "yearly")
       await page.locator('input[name="plan"][value="yearly"]').check();
     await page
-      .getByText(scenario === "yearly" ? "₹399" : "₹499", { exact: true })
+      .getByText(scenario === "yearly" ? "₹416.58" : "₹499", { exact: true })
       .waitFor();
     if (scenario === "yearly")
-      assert((await page.locator("#join").innerText()).includes("₹4,788"));
+      assert((await page.locator("#join").innerText()).includes("₹4,999"));
     await page.getByLabel("Full name").fill("Browser test");
     await page.locator('input[name="phone"]').fill("+919876543210");
     await page
@@ -88,10 +90,22 @@ try {
       );
       assert.equal(verification, 0);
     } else if (scenario === "verify-error") {
-      await page.locator('#join [role="alert"]').waitFor();
-      assert(!page.url().includes("/payment-success"));
-      const text = await page.locator('#join [role="alert"]').innerText();
-      assert(text.includes("signature verification failed"), text);
+      await page.waitForURL("**/payment-success");
+      await page
+        .getByText(
+          "Payment signature verification failed. Please contact support if money was debited.",
+          { exact: true },
+        )
+        .waitFor();
+      assert.equal(
+        await page
+          .getByRole("heading", {
+            name: "Your payment has been received",
+            exact: true,
+          })
+          .count(),
+        0,
+      );
     } else if (scenario === "load-error") {
       await page.locator('#join [role="alert"]').waitFor();
       assert.equal(creates, 0);
@@ -101,14 +115,44 @@ try {
           .isEnabled(),
         true,
       );
+    } else if (scenario === "pending") {
+      await page.waitForURL("**/payment-success");
+      await page
+        .getByText("Payment confirmation has not arrived yet.", {
+          exact: false,
+        })
+        .waitFor();
+      assert.equal(
+        await page
+          .getByRole("heading", {
+            name: "Your payment has been received",
+            exact: true,
+          })
+          .count(),
+        0,
+      );
+      assert.equal(creates, 1);
     } else {
       await page.waitForURL("**/payment-success");
       await page
-        .getByRole("heading", { name: "Test payment verified", exact: true })
+        .getByRole("heading", {
+          name: "Your payment has been received",
+          exact: true,
+        })
         .waitFor();
       assert(
         (await page.locator("main").innerText()).includes(
           "No real payment was taken",
+        ),
+      );
+      await page.getByText("Hi, Browser test,", { exact: true }).waitFor();
+      const community = page.getByRole("link", {
+        name: "Join WhatsApp Community",
+      });
+      assert.equal(await community.getAttribute("target"), "_blank");
+      assert(
+        (await community.getAttribute("href")).startsWith(
+          "https://chat.whatsapp.com/",
         ),
       );
       assert.equal(chosen, scenario);
@@ -126,7 +170,10 @@ try {
     .waitFor();
   assert.equal(
     await spoof
-      .getByRole("heading", { name: "Payment verified", exact: true })
+      .getByRole("heading", {
+        name: "Your payment has been received",
+        exact: true,
+      })
       .count(),
     0,
   );

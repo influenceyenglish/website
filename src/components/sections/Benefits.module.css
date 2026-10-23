@@ -1,5 +1,5 @@
 .section {
-  background: white;
+  background: var(--white);
   padding: 80px var(--page-gutter);
   display: flex;
   flex-direction: column;

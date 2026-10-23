@@ -13,9 +13,10 @@ type Props = {
   mobileAxis?: "x" | "y";
   gap?: number;
   hoverSpeed?: number;
+  repeat?: boolean;
 };
 
-/** React-rendered copies make a seamless track without DOM cloning. Speed is px/sec. */
+/** Repeated groups loop seamlessly; repeat=false moves one group back and forth. Speed is px/sec. */
 export function Ticker({
   children,
   className = "",
@@ -27,6 +28,7 @@ export function Ticker({
   mobileAxis = axis,
   gap = 24,
   hoverSpeed = 1,
+  repeat = true,
 }: Props) {
   const viewport = useRef<HTMLDivElement>(null),
     track = useRef<HTMLDivElement>(null),
@@ -43,14 +45,21 @@ export function Ticker({
       position = 0,
       distance = 0,
       hovered = false,
+      focused = false,
+      contentOverflows = true,
       visible = false;
     const measure = () => {
       const vertical = (mobile.matches ? mobileAxis : axis) === "y";
-      distance =
-        (vertical
-          ? first.getBoundingClientRect().height
-          : first.getBoundingClientRect().width) +
-        parseFloat(getComputedStyle(moving).gap || "0");
+      const contentSize = vertical
+        ? first.getBoundingClientRect().height
+        : first.getBoundingClientRect().width;
+      const viewportSize = vertical
+        ? root.getBoundingClientRect().height
+        : root.getBoundingClientRect().width;
+      contentOverflows = contentSize > viewportSize;
+      distance = repeat
+        ? contentSize + parseFloat(getComputedStyle(moving).gap || "0")
+        : Math.abs(contentSize - viewportSize);
     };
     const tick = (now: number) => {
       if (visible && !reduced.matches && distance > 0) {
@@ -59,10 +68,18 @@ export function Ticker({
           (position +
             elapsed *
               (mobile.matches ? mobileSpeed : speed) *
-              (hovered ? hoverSpeed : 1)) %
-          distance;
+              (hovered || focused ? hoverSpeed : 1)) %
+          (repeat ? distance : distance * 2);
         const reversed = mobile.matches ? mobileReverse : reverse;
-        moving.style.transform = `translate${(mobile.matches ? mobileAxis : axis) === "y" ? "Y" : "X"}(${reversed ? position - distance : -position}px)`;
+        const bounce =
+          position <= distance ? position : distance * 2 - position;
+        const offset = repeat
+          ? reversed
+            ? position - distance
+            : -position
+          : (contentOverflows ? -1 : 1) *
+            (reversed ? distance - bounce : bounce);
+        moving.style.transform = `translate${(mobile.matches ? mobileAxis : axis) === "y" ? "Y" : "X"}(${offset}px)`;
       }
       previous = now;
       frame = requestAnimationFrame(tick);
@@ -79,9 +96,17 @@ export function Ticker({
       },
       leave = () => {
         hovered = false;
+      },
+      focus = () => {
+        focused = true;
+      },
+      blur = (event: FocusEvent) => {
+        if (!root.contains(event.relatedTarget as Node | null)) focused = false;
       };
     root.addEventListener("mouseenter", enter);
     root.addEventListener("mouseleave", leave);
+    root.addEventListener("focusin", focus);
+    root.addEventListener("focusout", blur);
     mobile.addEventListener("change", measure);
     measure();
     frame = requestAnimationFrame(tick);
@@ -91,6 +116,8 @@ export function Ticker({
       observer.disconnect();
       root.removeEventListener("mouseenter", enter);
       root.removeEventListener("mouseleave", leave);
+      root.removeEventListener("focusin", focus);
+      root.removeEventListener("focusout", blur);
       mobile.removeEventListener("change", measure);
     };
   }, [
@@ -101,6 +128,7 @@ export function Ticker({
     hoverSpeed,
     reverse,
     mobileReverse,
+    repeat,
   ]);
   return (
     <div
@@ -109,7 +137,7 @@ export function Ticker({
       style={{ "--ticker-gap": `${gap}px` } as CSSProperties}
     >
       <div ref={track} className="ticker__track">
-        {[0, 1, 2].map((copy) => (
+        {(repeat ? [0, 1, 2] : [0]).map((copy) => (
           <div
             key={copy}
             ref={copy === 0 ? group : undefined}

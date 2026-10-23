@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
     if (!parsed.success)
       throw new PaymentError(
         400,
-        "Choose a plan, enter a valid name/email and accept the membership terms.",
+        "Choose monthly or yearly billing, enter a valid name, email and mobile number, and accept the membership terms.",
       );
     const { config, store, service } = services();
     await store.rateLimit(

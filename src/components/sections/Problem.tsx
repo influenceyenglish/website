@@ -18,26 +18,27 @@ export function Problem() {
       </div>
       <Ticker
         className={styles.photoTicker}
-        gap={16}
+        gap={20}
         speed={40}
         reverse
         hoverSpeed={0.3}
       >
-        {site.problem.images.map((image) => (
-          <Image
-            key={image.src}
-            className={styles.problemPhoto}
-            src={image.src}
-            alt={image.alt}
-            width={400}
-            height={400}
-            sizes="(max-width: 809px) 216px, 288px"
-          />
+        {site.problem.features.map((feature) => (
+          <figure key={feature.src} className={styles.featureCard}>
+            <Image
+              className={styles.problemPhoto}
+              src={feature.src}
+              alt={feature.alt}
+              fill
+              sizes="(max-width: 809px) 300px, (min-width: 1600px) 440px, 400px"
+            />
+            <figcaption className={styles.featureCaption}>
+              <h3>{feature.title}</h3>
+              <p>{feature.detail}</p>
+            </figcaption>
+          </figure>
         ))}
       </Ticker>
-      {/* <p className={styles.illustrationNote}>
-        Illustrative speaking and work scenarios ? not student photographs.
-      </p> */}
       <p className={`${styles.callout} eyebrow`}>{site.problem.callout}</p>
     </section>
   );

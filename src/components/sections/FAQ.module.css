@@ -22,7 +22,7 @@
 .faqItem {
   padding: 22px;
   border-radius: 20px;
-  background: white;
+  background: var(--white);
   overflow: hidden;
   transition:
     background-color 0.3s,
@@ -59,7 +59,7 @@
 .faqIcon > span {
   height: 1px;
   width: 10px;
-  background: white;
+  background: var(--white);
   position: absolute;
   left: 9px;
   top: 13.5px;
@@ -70,7 +70,7 @@
 }
 .faqOpen {
   background: var(--ink);
-  color: white;
+  color: var(--white);
 }
 .faqOpen .faqIcon {
   background: #fff3;

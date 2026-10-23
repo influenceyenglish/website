@@ -12,7 +12,17 @@ export const createCheckoutSchema = z
       .string()
       .trim()
       .regex(/^\+?[0-9]{10,15}$/)
-      .optional(),
+      .transform((value) =>
+        value.startsWith("+")
+          ? value
+          : value.length === 10
+            ? "+91" + value
+            : "+" + value,
+      )
+      .refine(
+        (value) => /^\+[1-9][0-9]{9,14}$/.test(value),
+        "Enter an international mobile number",
+      ),
     consent: z.literal(true),
   })
   .strict();
@@ -80,6 +90,7 @@ export type Attempt = {
   created_at: Date;
 };
 export type PaymentGrant = {
+  invoiceId: string;
   paymentId: string;
   subscriptionId: string;
   amount: number;

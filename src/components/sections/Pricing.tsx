@@ -38,8 +38,9 @@ export function Pricing() {
         </ul>
       </div>
       <p className={styles.policyNote}>
-        Policy details are provisional until the legal/business name and
-        delivery schedule are confirmed. No live payment is enabled.
+        {business.detailsConfirmed
+          ? "Secure recurring payments through Razorpay. Review the subscription and refund terms before joining."
+          : "Policy details are provisional until the legal/business name and delivery schedule are confirmed. No live payment is enabled."}
       </p>
     </section>
   );

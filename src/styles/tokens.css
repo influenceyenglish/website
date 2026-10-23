@@ -17,18 +17,30 @@
   font-display: swap;
 }
 :root {
-  --primary: #07569a;
-  --primary-light: #347bb7;
-  --primary-dark: #043b6b;
-  --secondary: #11aaa4;
-  --secondary-light: #73d2c5;
-  --background-tint: #eff8fa;
-  --ink: var(--primary-dark);
-  --body-ink: #122426;
-  --paper: var(--background-tint);
+  /* Brand anchors. Derive shades here so future rebrands have one source. */
+  --brand-blue: #01408f;
+  --brand-red: #e50110;
   --white: #fff;
-  --accent: var(--secondary-light);
-  --muted: color-mix(in srgb, var(--primary-dark) 40%, transparent);
+  --primary: var(--brand-blue);
+  --primary-light: color-mix(in srgb, var(--primary) 65%, var(--white));
+  --primary-dark: color-mix(in srgb, var(--primary) 65%, #071525);
+  --primary-soft: color-mix(in srgb, var(--primary) 12%, var(--white));
+  --secondary: var(--brand-red);
+  --secondary-light: color-mix(in srgb, var(--secondary) 8%, var(--white));
+  --secondary-dark: color-mix(in srgb, var(--secondary) 65%, #35121a);
+  /* Broad surfaces stay blue/neutral; reserve red for small brand details. */
+  --accent: var(--primary-soft);
+  --background-tint: color-mix(in srgb, var(--primary) 3%, var(--white));
+  --ink: var(--primary-dark);
+  --body-ink: color-mix(in srgb, var(--primary) 20%, #202630);
+  --paper: var(--background-tint);
+  --muted: color-mix(in srgb, var(--primary-dark) 68%, var(--white));
+  --on-dark-muted: color-mix(in srgb, var(--primary) 18%, var(--white));
+  --border: color-mix(in srgb, var(--primary) 15%, var(--white));
+  --border-strong: color-mix(in srgb, var(--primary) 25%, var(--white));
+  --border-on-dark: color-mix(in srgb, var(--primary-light) 40%, transparent);
+  --error-background: var(--secondary-light);
+  --error-ink: var(--secondary-dark);
   --font-heading: "Rothorn", sans-serif;
   --font-body: "DM Sans", sans-serif;
   --page-gutter: 80px;

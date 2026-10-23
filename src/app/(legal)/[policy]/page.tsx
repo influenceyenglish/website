@@ -2,6 +2,7 @@
 import { notFound } from "next/navigation";
 import { DocumentShell } from "@/components/legal/DocumentShell";
 import { policies, isPolicyKey } from "@/content/policies";
+import { business } from "@/content/business";
 export const dynamicParams = false;
 export function generateStaticParams() {
   return Object.keys(policies).map((policy) => ({ policy }));
@@ -31,7 +32,7 @@ export default async function PolicyPage({
     <DocumentShell
       title={document.title}
       description={document.description}
-      draft
+      draft={!business.detailsConfirmed}
     >
       {document.sections.map((section) => (
         <section key={section.heading}>

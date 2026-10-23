@@ -1,5 +1,8 @@
 ﻿import type { Metadata } from "next";
-import { DocumentShell } from "@/components/legal/DocumentShell";
+import Link from "next/link";
+import { Footer } from "@/components/sections/Footer";
+import shellStyles from "@/components/legal/DocumentShell.module.css";
+import styles from "./PaymentSuccess.module.css";
 import { PaymentStatus } from "@/components/checkout/PaymentStatus";
 export const metadata: Metadata = {
   title: "Payment status",
@@ -8,11 +11,14 @@ export const metadata: Metadata = {
 };
 export default function PaymentSuccessPage() {
   return (
-    <DocumentShell
-      title="Your payment status."
-      description="Only verified server records can confirm a paid membership period."
-    >
-      <PaymentStatus />
-    </DocumentShell>
+    <>
+      <header className={`${shellStyles.header} ${styles.header}`}>
+        <Link href="/">Influency English</Link>
+      </header>
+      <main id="main-content" className={styles.main}>
+        <PaymentStatus />
+      </main>
+      <Footer />
+    </>
   );
 }

@@ -3,36 +3,33 @@ export const plans = {
   monthly: {
     id: "monthly",
     label: "Monthly",
-    amount: 49_900,
     displayPrice: "₹499",
     monthlyEquivalent: "₹499",
     cadence: "month",
     period: "monthly",
-    totalCount: 120,
     description: "A month of guided English-speaking practice",
   },
   yearly: {
     id: "yearly",
     label: "Yearly",
-    amount: 478_800,
-    displayPrice: "₹4,788",
-    monthlyEquivalent: "₹399",
+    displayPrice: "₹4,999",
+    monthlyEquivalent: "₹416.58",
     cadence: "year",
     period: "yearly",
-    totalCount: 10,
-    description: "A year of guided practice at ₹399 per month, billed annually",
+    description:
+      "A year of guided practice at ₹416.58 per month, billed annually",
   },
 } as const;
 export type PlanKey = keyof typeof plans;
 
 export const site = {
-  name: "Influencey English",
+  name: "Influency English",
   joinHref: "#pricing",
   email: "hello@influenceyenglish.com",
   hero: {
     heading: "For people who are ready to speak English.",
     description:
-      "Influencey English is a speaking-practice community for anyone who wants to speak clearly, build confidence, and grow through real conversations.",
+      "Influency English is a speaking-practice community for anyone who wants to speak clearly, build confidence, and grow through real conversations.",
     note: "Real practice · No more fear of speaking",
   },
   navigation: [
@@ -47,26 +44,36 @@ export const site = {
       "More passive learning is not always the missing piece. You need a place to speak, notice what can improve, and try again — without being judged for getting it wrong.",
     ],
     callout: "YOU DON’T HAVE TO PRACTICE ENGLISH ALONE ANYMORE.",
-    images: [
+    features: [
       {
-        src: "/images/students/jamsheer1.webp",
-        alt: "Illustrative workplace preparation scene",
+        title: "Topic Discussion",
+        detail: "Share ideas. Find your voice.",
+        src: "/images/features/topic-discussion.jpg",
+        alt: "A group sharing ideas around a table with laptops",
       },
       {
-        src: "/images/students/minha1.webp",
-        alt: "Illustrative speaking practice scene",
+        title: "Daily 1-on-1 Breakout Discussions",
+        detail: "More conversation. Every day.",
+        src: "/images/features/daily-breakout-discussion.jpg",
+        alt: "An online discussion on a laptop screen",
       },
       {
-        src: "/images/students/nihal1.webp",
-        alt: "Illustrative group conversation scene",
+        title: "Weekly Public Speaking",
+        detail: "Step up. Speak with confidence.",
+        src: "/images/features/public-speaking-session-weekly.webp",
+        alt: "Influency English public-speaking session with members on a video call",
       },
       {
-        src: "/images/students/nuha1.webp",
-        alt: "Illustrative peer discussion scene",
+        title: "Shadow Writing",
+        detail: "Notice the language. Make it yours.",
+        src: "/images/features/shadow-writing.jpg",
+        alt: "A learner practising writing with notes at a desk",
       },
       {
-        src: "/images/students/noor1.webp",
-        alt: "Illustrative peer discussion scene",
+        title: "Daily Quiz",
+        detail: "A little challenge. A daily habit.",
+        src: "/images/features/daily-quiz.jpg",
+        alt: "Learners working through an activity on a laptop",
       },
     ],
   },
@@ -130,7 +137,7 @@ export const site = {
   founder: {
     heading: "Meet Hashim.\nA community with a purpose.",
     paragraphs: [
-      "Influencey English is led by Mohamed Hashim. Its focus is practical: create room for people to use English, receive corrective feedback and keep speaking.",
+      "Influency English is led by Mohamed Hashim. Its focus is practical: create room for people to use English, receive corrective feedback and keep speaking.",
       "The community is designed mainly around the needs of men starting or newly entering their careers. The aim is not only fluent sentences, but thoughtful communication — listening well, responding with care and expressing ideas clearly.",
     ],
     stats: [
@@ -195,7 +202,7 @@ export const heroRows: MemberCard[][] = [
     {
       type: "video",
       video: "/videos/students/nihal-short.mp4",
-      label: "M Nihal, Influencey English student",
+      label: "M Nihal, Influency English student",
       author: "M Nihal",
       qualification: "",
     },
@@ -214,7 +221,7 @@ export const heroRows: MemberCard[][] = [
     {
       type: "video",
       video: "/videos/students/nuha-short.mp4",
-      label: "Nuha A, Influencey English student",
+      label: "Nuha A, Influency English student",
       author: "Nuha A",
       qualification: "",
     },
@@ -227,7 +234,7 @@ export const heroRows: MemberCard[][] = [
     {
       type: "video",
       video: "/videos/students/jamsheer-short.mp4",
-      label: "Jamsheer, Influencey English student",
+      label: "Jamsheer, Influency English student",
       author: "Jamsheer",
       qualification: "",
     },
@@ -256,7 +263,7 @@ export const heroRows: MemberCard[][] = [
     {
       type: "video",
       video: "/videos/students/minha-short.mp4",
-      label: "Minha, Influencey English student",
+      label: "Minha, Influency English student",
       author: "Minha",
       qualification: "",
     },
@@ -269,7 +276,7 @@ export const heroRows: MemberCard[][] = [
     {
       type: "video",
       video: "/videos/students/noor-short.mp4",
-      label: "Noor, Influencey English student",
+      label: "Noor, Influency English student",
       author: "Noor",
       qualification: "",
     },
@@ -313,7 +320,7 @@ export const testimonials = [
 
 export const faqs = [
   {
-    question: "What is Influencey English?",
+    question: "What is Influency English?",
     answer:
       "An online English-speaking practice community. Membership includes public-speaking practice, weekly mastermind discussions, communication resources, speaker-identity training, live speaking opportunities, corrective feedback and peer support.",
   },
@@ -335,7 +342,7 @@ export const faqs = [
   {
     question: "What does membership cost?",
     answer:
-      "₹499 per month or ₹399 per month on the yearly plan (₹4,788 billed annually), billed in INR. A year paid monthly would cost ₹5,988, so the yearly plan saves ₹1,200 — about 20% off. The yearly plan is charged in one payment, not monthly instalments.",
+      "₹499 per month or ₹416.58 per month on the yearly plan (₹4,999 billed annually), billed in INR. A year paid monthly would cost ₹5,988, so the yearly plan saves ₹989 — about 16.5% off. The yearly plan is charged in one payment, not monthly instalments.",
   },
   {
     question: "Will my subscription renew automatically?",
