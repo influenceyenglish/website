@@ -20,7 +20,7 @@ export default function Home() {
         {/* <Benefits /> */}
         <Audience />
         {/* <Invitation /> */}
-        <Proof />
+        {/* <Proof /> */}
         <Founder />
         <Pricing />
         <FAQ />
