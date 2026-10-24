@@ -169,12 +169,12 @@ export function CheckoutForm({ mode = "test" }: { mode?: "test" | "live" }) {
           >
             <path d="M20 3h-7L3 13l8 8L21 11V4a1 1 0 0 0-1-1Zm-3 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4Z" />
           </svg>
-          Save ₹989 with yearly
+          Save ₹1,200 with yearly
         </span>
       </div>
       <p className={styles.planNote}>
         {plan === "yearly"
-          ? "₹4,999 billed annually. Save ₹989 a year — about 16.5% off."
+          ? "₹4,788 billed annually. Save ₹1,200 a year — about 20% off."
           : "Join live speaking practice and grow with the community."}{" "}
         <Link href="/refund-policy">View refund terms</Link>.
       </p>
@@ -268,7 +268,7 @@ export function CheckoutForm({ mode = "test" }: { mode?: "test" | "live" }) {
           By continuing, you authorize AutoPay. {selected.displayPrice} will be
           charged {selected.period} after authorisation until cancelled or the
           mandate expires. Cancel anytime.
-          {plan === "yearly" && " ₹4,999 is charged in one yearly payment."}
+          {plan === "yearly" && " ₹4,788 is charged in one yearly payment."}
         </p>
         <button
           className={styles.submit}

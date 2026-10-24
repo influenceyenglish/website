@@ -37,9 +37,9 @@ Use plans created in **Live Mode**, with INR currency and interval `1`:
 | Setting                 | Billing frequency | Total charge            |
 | ----------------------- | ----------------- | ----------------------- |
 | `RAZORPAY_PLAN_MONTHLY` | Monthly           | ₹499 (`49900` paise)    |
-| `RAZORPAY_PLAN_YEARLY`  | Yearly            | ₹4,999 (`499900` paise) |
+| `RAZORPAY_PLAN_YEARLY`  | Yearly            | ₹4,788 (`478800` paise) |
 
-The website displays the yearly equivalent as ₹416.58/month. Supply `plan_…` IDs, not `sub_…` IDs or prices. The server fetches plans and rejects mismatched prices, currencies or billing intervals. The previously supplied plan IDs can be used if they belong to your Live account and pass this check.
+The website displays the yearly equivalent as ₹399/month. Supply `plan_…` IDs, not `sub_…` IDs or prices. The server fetches plans and rejects mismatched prices, currencies or billing intervals. The previously supplied plan IDs can be used if they belong to your Live account and pass this check.
 
 ## Database and preflight
 

@@ -63,7 +63,7 @@ class Gateway implements PaymentGateway {
       id,
       period: id === "plan_monthly" ? "monthly" : "yearly",
       interval: 1,
-      item: { amount: id === "plan_monthly" ? 49900 : 499900, currency: "INR" },
+      item: { amount: id === "plan_monthly" ? 49900 : 478800, currency: "INR" },
     };
   }
   async createSubscription(
@@ -188,8 +188,8 @@ test("three-table persistence and signed payment webhooks", async (t) => {
     };
     if (plan === "yearly") {
       gateway.remote.plan_id = "plan_yearly";
-      gateway.payment.amount = 499900;
-      gateway.invoice.amount_paid = 499900;
+      gateway.payment.amount = 478800;
+      gateway.invoice.amount_paid = 478800;
       gateway.end = Math.floor(Date.now() / 1000) + 365 * 86400;
       gateway.remote.current_end = gateway.end;
       gateway.invoice.billing_end = gateway.end;

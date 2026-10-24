@@ -4,7 +4,7 @@ The app uses only members, subscriptions and webhook_events through pg and DATAB
 
 ## Test setup
 
-Use Test Mode credentials and matching INR plans: monthly 49900 paise, yearly 499900 paise, interval 1. Run npm run payments:check for read-only preflight. Use the connected Supabase project's transaction pooler URL for serverless, with TLS. The approved baseline is already applied. The legacy db:migrate command is disabled.
+Use Test Mode credentials and matching INR plans: monthly 49900 paise, yearly 478800 paise, interval 1. Run npm run payments:check for read-only preflight. Use the connected Supabase project's transaction pooler URL for serverless, with TLS. The approved baseline is already applied. The legacy db:migrate command is disabled.
 
 ## Verification and access
 

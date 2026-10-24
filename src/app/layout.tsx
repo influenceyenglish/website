@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     template: "%s | Influency English",
   },
   description:
-    "English-speaking practice for early-career professionals. Learn through the Corrective Feedback Loop. Join for ₹499/month or ₹4,999/year.",
+    "English-speaking practice for early-career professionals. Learn through the Corrective Feedback Loop. Join for ₹499/month or ₹4,788/year.",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",

@@ -12,12 +12,11 @@ export const plans = {
   yearly: {
     id: "yearly",
     label: "Yearly",
-    displayPrice: "₹4,999",
-    monthlyEquivalent: "₹416.58",
+    displayPrice: "₹4,788",
+    monthlyEquivalent: "₹399",
     cadence: "year",
     period: "yearly",
-    description:
-      "A year of guided practice at ₹416.58 per month, billed annually",
+    description: "A year of guided practice at ₹399 per month, billed annually",
   },
 } as const;
 export type PlanKey = keyof typeof plans;
@@ -342,7 +341,7 @@ export const faqs = [
   {
     question: "What does membership cost?",
     answer:
-      "₹499 per month or ₹416.58 per month on the yearly plan (₹4,999 billed annually), billed in INR. A year paid monthly would cost ₹5,988, so the yearly plan saves ₹989 — about 16.5% off. The yearly plan is charged in one payment, not monthly instalments.",
+      "₹499 per month or ₹399 per month on the yearly plan (₹4,788 billed annually), billed in INR. A year paid monthly would cost ₹5,988, so the yearly plan saves ₹1,200 — about 20% off. The yearly plan is charged in one payment, not monthly instalments.",
   },
   {
     question: "Will my subscription renew automatically?",

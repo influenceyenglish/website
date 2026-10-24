@@ -15,8 +15,8 @@ try {
     assert(body.includes("Influency English"));
     assert(body.includes("₹499"));
     await p.locator('input[name="plan"][value="yearly"]').check();
-    await p.getByText("₹416.58", { exact: true }).waitFor();
-    assert((await p.locator("#join").innerText()).includes("₹4,999"));
+    await p.getByText("₹399", { exact: true }).waitFor();
+    assert((await p.locator("#join").innerText()).includes("₹4,788"));
     await p.locator('input[name="plan"][value="monthly"]').check();
     assert(body.includes("Corrective Feedback Loop"));
     assert(!/Kindred|Alex Monroe|1,400\+ members|47%|54\.5%/.test(body));

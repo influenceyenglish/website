@@ -70,10 +70,10 @@ try {
     if (scenario === "yearly")
       await page.locator('input[name="plan"][value="yearly"]').check();
     await page
-      .getByText(scenario === "yearly" ? "₹416.58" : "₹499", { exact: true })
+      .getByText(scenario === "yearly" ? "₹399" : "₹499", { exact: true })
       .waitFor();
     if (scenario === "yearly")
-      assert((await page.locator("#join").innerText()).includes("₹4,999"));
+      assert((await page.locator("#join").innerText()).includes("₹4,788"));
     await page.getByLabel("Full name").fill("Browser test");
     await page.locator('input[name="phone"]').fill("+919876543210");
     await page
