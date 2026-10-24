@@ -28,6 +28,8 @@ export async function POST(request: NextRequest) {
       20,
     );
     await store.rateLimit(`create-session:${session.hash}`, 10);
+    await store.rateLimit(`create-customer:${hash(parsed.data.email)}`, 5);
+    await store.rateLimit(`create-phone:${hash(parsed.data.phone)}`, 5);
     const attempt = await service.create(parsed.data, session.hash);
     return setSession(
       json({

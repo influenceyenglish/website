@@ -1,6 +1,6 @@
-# Current status: demo/test only
+# Current status: live rate limiting implemented; deployment verification required
 
-Live browser payment requests remain blocked until shared rate limiting is configured. This guide describes later production configuration; it does not indicate live readiness.
+Payment creation requests now require functioning Upstash Redis on Vercel and in Live Mode. Missing credentials, Redis failures and timeouts block requests with HTTP 503. Passing the limiter alone does not establish overall live readiness. See [payment rate limiting](payment-rate-limiting.md) for setup and verification.
 
 # Live Razorpay setup
 
@@ -15,6 +15,10 @@ RAZORPAY_KEY_SECRET=REPLACE_WITH_YOUR_LIVE_API_SECRET
 RAZORPAY_PLAN_MONTHLY=plan_REPLACE_WITH_LIVE_MONTHLY_PLAN_ID
 RAZORPAY_PLAN_YEARLY=plan_REPLACE_WITH_LIVE_YEARLY_PLAN_ID
 RAZORPAY_WEBHOOK_SECRET=REPLACE_WITH_A_SEPARATE_RANDOM_WEBHOOK_SECRET
+RESEND_API_KEY=re_REPLACE_WITH_YOUR_RESEND_KEY
+RESEND_FROM="Influency English Billing <billing@influenceyenglish.com>"
+KV_REST_API_URL=https://YOUR_REDIS_REST_ENDPOINT
+KV_REST_API_TOKEN=REPLACE_WITH_YOUR_REDIS_REST_TOKEN
 DATABASE_URL=REPLACE_WITH_YOUR_PRODUCTION_POSTGRES_CONNECTION_URL
 APP_URL=https://YOUR_PRODUCTION_DOMAIN
 NEXT_PUBLIC_SITE_URL=https://YOUR_PRODUCTION_DOMAIN
@@ -86,6 +90,6 @@ Razorpay cannot send webhooks directly to localhost. Use the deployed public end
 4. Check that checkout opens with the expected Live Mode plan and that a controlled real payment is independently verified on `/payment-success`.
 5. Confirm successful webhook deliveries and the correct paid billing period in your database. Check pending/failure, cancellation, and refund handling before opening enrolment broadly.
 
-The app records payment and lifecycle state in members, subscriptions and webhook_events. It does **not** automatically send onboarding emails or grant access in an external community platform. Until a fulfilment worker is connected, the operator must monitor verified payments and deliver the promised onboarding within two business days. Cancellation/refunds also require operator action through Razorpay/support; closing Checkout does not cancel an existing subscription.
+The app records payment and lifecycle state in members, subscriptions and webhook_events. Live internal failure alerts go to billing@influenceyenglish.com through Resend after verified webhook processing, independently of membership/payment success. Verify the sender domain and configure RESEND_API_KEY and RESEND_FROM in Production. It does **not** automatically send onboarding emails or grant access in an external community platform. Until a fulfilment worker is connected, the operator must monitor verified payments and deliver the promised onboarding within two business days. Cancellation/refunds also require operator action through Razorpay/support; closing Checkout does not cancel an existing subscription.
 
 Sources: [Razorpay Subscriptions integration](https://razorpay.com/docs/payments/subscriptions/integration-guide/), [Razorpay webhook verification](https://razorpay.com/docs/webhooks/validate-test/), [Vercel environment variables](https://vercel.com/docs/environment-variables).

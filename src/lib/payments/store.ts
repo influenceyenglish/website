@@ -1,3 +1,4 @@
+import { paymentRateLimit } from "./rate-limit";
 import {
   PaymentError,
   type Attempt,
@@ -28,8 +29,6 @@ const attemptSelect = `SELECT s.id,s.mode,s.session_hash,s.plan,s.razorpay_plan_
  s.expected_amount,m.full_name AS customer_name,m.email AS customer_email,m.phone AS customer_phone,
  s.checkout_state AS state,s.razorpay_subscription_id AS subscription_id,s.last_payment_id AS verified_payment_id,s.created_at
  FROM public.subscriptions s JOIN public.members m ON m.mode=s.mode AND m.id=s.member_id`;
-// Demo-only throttle: entitlement, checkout idempotency and event state always live in Postgres.
-const buckets = new Map<string, { count: number; expires: number }>();
 export class PaymentStore {
   constructor(
     private db: Database,
@@ -123,29 +122,7 @@ export class PaymentStore {
     );
   }
   async rateLimit(key: string, limit = 8, windowSeconds = 600) {
-    if (this.mode !== "test")
-      throw new PaymentError(
-        503,
-        "Live checkout requires shared rate limiting before it can be enabled.",
-      );
-    const now = Date.now();
-    for (const [k, v] of buckets) if (v.expires <= now) buckets.delete(k);
-    const id = `${this.mode}:${key}`;
-    let bucket = buckets.get(id);
-    if (!bucket) {
-      if (buckets.size >= 10000)
-        throw new PaymentError(
-          429,
-          "Too many payment attempts. Please try later.",
-        );
-      bucket = { count: 0, expires: now + windowSeconds * 1000 };
-      buckets.set(id, bucket);
-    }
-    if (++bucket.count > limit)
-      throw new PaymentError(
-        429,
-        "Too many payment attempts. Please wait 10 minutes or contact support.",
-      );
+    return paymentRateLimit(this.mode, key, limit, windowSeconds);
   }
   async verifyAttempt(id: string, paymentId: string) {
     await this.db.query(

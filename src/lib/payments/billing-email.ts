@@ -20,7 +20,6 @@ export async function sendPendingBillingEmails(
   config: { mode: "test" | "live"; apiKey?: string; from: string },
   send?: BillingSend,
 ) {
-  if (config.mode !== "test") return { state: "disabled_for_live", sent: 0 };
   if (!config.apiKey?.trim() && !send)
     return { state: "missing_api_key", sent: 0 };
   const resend = send ? null : new Resend(config.apiKey);
@@ -50,24 +49,28 @@ export async function sendPendingBillingEmails(
   let sent = 0;
   for (let i = 0; i < 10; i++) {
     // Commit the durable claim before contacting Resend; no network calls inside a transaction.
-    const claimed =
-      await db.query(`UPDATE public.subscriptions s SET failure_email_state='sending',updated_at=now()
-      WHERE s.id=(SELECT q.id FROM public.subscriptions q WHERE q.mode='test' AND q.failure_email_state IN ('pending','failed')
+    const claimed = await db.query(
+      `UPDATE public.subscriptions s SET failure_email_state='sending',updated_at=now()
+      WHERE s.id=(SELECT q.id FROM public.subscriptions q WHERE q.mode=$1 AND q.failure_email_state IN ('pending','failed')
       ORDER BY q.created_at LIMIT 1 FOR UPDATE SKIP LOCKED)
-      RETURNING s.id,s.plan,s.razorpay_subscription_id,s.member_id`);
+      RETURNING s.id,s.plan,s.razorpay_subscription_id,s.member_id`,
+      [config.mode],
+    );
     const row = claimed.rows[0];
     if (!row) break;
     const member = await db.query(
       "SELECT full_name,email,phone FROM public.members WHERE id=$1 AND mode=$2",
-      [row.member_id, "test"],
+      [row.member_id, config.mode],
     );
     const contact = member.rows[0];
     const message: BillingEmail = {
       from: config.from,
       to: billingRecipient,
-      subject: "[TEST] Influency English payment failure - internal follow-up",
+      subject: `${config.mode === "test" ? "[TEST] " : ""}Influency English payment failure - internal follow-up`,
       text: [
-        "TEST MODE: no real payment or community access.",
+        config.mode === "test"
+          ? "TEST MODE: no real payment or community access."
+          : "LIVE MODE: review this payment failure in Razorpay.",
         "A verified Razorpay payment failure requires one internal follow-up.",
         `Name: ${contact?.full_name || "Unavailable"}`,
         `Email: ${contact?.email || "Unavailable"}`,
@@ -80,15 +83,18 @@ export async function sendPendingBillingEmails(
     };
     let result: Awaited<ReturnType<BillingSend>>;
     try {
-      result = await deliver(message, `billing-failure/test/${row.id}`);
+      result = await deliver(
+        message,
+        `billing-failure/${config.mode}/${row.id}`,
+      );
     } catch {
       return { state: "delivery_uncertain", sent };
     }
     if (!result.accepted) {
       if (result.definiteFailure)
         await db.query(
-          `UPDATE public.subscriptions SET failure_email_state='failed',updated_at=now() WHERE id=$1 AND mode='test' AND failure_email_state='sending'`,
-          [row.id],
+          `UPDATE public.subscriptions SET failure_email_state='failed',updated_at=now() WHERE id=$1 AND mode=$2 AND failure_email_state='sending'`,
+          [row.id, config.mode],
         );
       return {
         state: result.definiteFailure ? "send_failed" : "delivery_uncertain",
@@ -96,8 +102,8 @@ export async function sendPendingBillingEmails(
       };
     }
     await db.query(
-      `UPDATE public.subscriptions SET failure_email_state='sent',failure_email_sent_at=now(),updated_at=now() WHERE id=$1 AND mode='test' AND failure_email_state='sending'`,
-      [row.id],
+      `UPDATE public.subscriptions SET failure_email_state='sent',failure_email_sent_at=now(),updated_at=now() WHERE id=$1 AND mode=$2 AND failure_email_state='sending'`,
+      [row.id, config.mode],
     );
     sent++;
   }

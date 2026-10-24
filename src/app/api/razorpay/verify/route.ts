@@ -24,13 +24,12 @@ export async function POST(request: NextRequest) {
     const parsed = verifyCheckoutSchema.safeParse(await readJSON(request));
     if (!parsed.success)
       throw new PaymentError(400, "Invalid checkout verification details.");
-    const { store, service } = services();
+    const { service } = services();
     const attempt = await service.boundAttempt(
       parsed.data.requestId,
       session.hash,
     );
     requireFresh(attempt.created_at);
-    await store.rateLimit(`verify:${session.hash}`, 30);
     return json(await service.verify(parsed.data, session.hash));
   } catch (error) {
     return errorResponse(error);
@@ -52,7 +51,6 @@ export async function GET(request: NextRequest) {
     const { store, service } = services();
     const attempt = await service.boundAttempt(id.data, session.hash);
     requireFresh(attempt.created_at);
-    await store.rateLimit(`status:${session.hash}`, 120);
     const paymentStatus = await store.status(attempt);
     return json({
       ...paymentStatus,
