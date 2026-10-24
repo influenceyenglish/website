@@ -102,12 +102,12 @@ export const site = {
     ],
   },
   includes: [
-    "Public-speaking practice",
-    "Weekly mastermind discussions",
+    "Daily One-on-One Breakout Discussions",
+    "Weekly public-speaking sessions",
     "Communication courses and resources",
     "Speaker-identity training",
-    "Live public-speaking opportunities",
-    "Corrective feedback",
+    "Daily Quiz",
+    "Shadow Writing",
     "Community support",
   ],
   benefits: [
@@ -134,15 +134,15 @@ export const site = {
     "You want to become a clearer, more emotionally intelligent and influential communicator.",
   ],
   founder: {
-    heading: "Meet Hashim.\nA community with a purpose.",
+    heading: "Hi, This is Hashim.\nA community with a purpose.",
     paragraphs: [
       "Influency English is led by Mohamed Hashim. Its focus is practical: create room for people to use English, receive corrective feedback and keep speaking.",
       "The community is designed mainly around the needs of men starting or newly entering their careers. The aim is not only fluent sentences, but thoughtful communication — listening well, responding with care and expressing ideas clearly.",
     ],
     stats: [
-      { value: "1000+", label: "live sessions" },
+      { value: "800+", label: "live sessions" },
       { value: "100+", label: "students supported" },
-      { value: "10", label: "years of experience" },
+      { value: "9", label: "years of experience" },
     ],
   },
   outcomes: [
@@ -354,8 +354,8 @@ export const faqs = [
       "After a full membership payment is verified, onboarding instructions and community access details are sent to the email used at checkout within 2 business days. Sessions and resources are delivered online. The final platform, live-session timings and course catalogue must be confirmed before live enrolment opens.",
   },
   {
-    question: "Can I cancel or request a refund?",
+    question: "Can I cancel anytime?",
     answer:
-      "Email hello@influenceyenglish.com or call +91 99476 01539. Provisional policy: first-payment refund requests within 7 calendar days; cancellation requests actioned within 2 business days; approved refunds initiated within 5–7 business days. Review the refund and subscription policies before paying.",
+      "Yes you can cancel anytime. No contracts. Though most people stay because it keeps working. Any issue email to hello@influenceyenglish.com or call +91 99476 01539.",
   },
 ] as const;

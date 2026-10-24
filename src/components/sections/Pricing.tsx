@@ -21,12 +21,12 @@ export function Pricing() {
           <CheckoutForm
             mode={process.env.RAZORPAY_MODE === "live" ? "live" : "test"}
           />
-          <p className={styles.billingNote}>
+          {/* <p className={styles.billingNote}>
             Online access details within {business.onboardingBusinessDays}{" "}
             business days of verified full payment.{" "}
             <Link href="/subscription-policy">Delivery &amp; cancellation</Link>{" "}
             · <Link href="/refund-policy">Refund terms</Link>
-          </p>
+          </p> */}
         </div>
         <ul className={styles.includes}>
           {site.includes.map((item) => (
@@ -37,11 +37,11 @@ export function Pricing() {
           ))}
         </ul>
       </div>
-      <p className={styles.policyNote}>
+      {/* <p className={styles.policyNote}>
         {business.detailsConfirmed
           ? "Secure recurring payments through Razorpay. Review the subscription and refund terms before joining."
           : "Policy details are provisional until the legal/business name and delivery schedule are confirmed. No live payment is enabled."}
-      </p>
+      </p> */}
     </section>
   );
 }

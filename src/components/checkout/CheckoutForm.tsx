@@ -176,7 +176,7 @@ export function CheckoutForm({ mode = "test" }: { mode?: "test" | "live" }) {
         {plan === "yearly"
           ? "₹4,788 billed annually. Save ₹1,200 a year — about 20% off."
           : "Join live speaking practice and grow with the community."}{" "}
-        <Link href="/refund-policy">View refund terms</Link>.
+        {/* <Link href="/refund-policy">View refund terms</Link>. */}
       </p>
       <div className={styles.detailsCard}>
         <div className={styles.fields}>
@@ -302,13 +302,13 @@ export function CheckoutForm({ mode = "test" }: { mode?: "test" | "live" }) {
             <rect x="5" y="10" width="14" height="12" rx="2" />
             <path d="M8 10V6a4 4 0 0 1 8 0v4" />
           </svg>
-          Secure checkout
+          Secure recurring payment through Razorpay
         </p>
-        <p className={styles.mode}>
+        {/* <p className={styles.mode}>
           {mode === "test"
             ? "Test Mode · No real payment or real community access."
             : "Secure recurring payment through Razorpay."}
-        </p>
+        </p> */}
         <p role="status" aria-live="polite" className={styles.status}>
           {message}
         </p>
