@@ -26,7 +26,7 @@ export type WebhookWork = {
   subscription?: { id: string; status: string; eventAt: number };
 };
 const attemptSelect = `SELECT s.id,s.mode,s.session_hash,s.plan,s.razorpay_plan_id AS provider_plan_id,
- s.expected_amount,m.full_name AS customer_name,m.email AS customer_email,m.phone AS customer_phone,
+ s.expected_amount,coalesce(s.checkout_name,m.full_name) AS customer_name,coalesce(s.checkout_email,m.email) AS customer_email,coalesce(s.checkout_phone,m.phone) AS customer_phone,
  s.checkout_state AS state,s.razorpay_subscription_id AS subscription_id,s.last_payment_id AS verified_payment_id,s.created_at
  FROM public.subscriptions s JOIN public.members m ON m.mode=s.mode AND m.id=s.member_id`;
 export class PaymentStore {
@@ -55,7 +55,9 @@ export class PaymentStore {
           existing.mode !== this.mode ||
           existing.session_hash !== sessionHash ||
           existing.plan !== input.plan ||
-          existing.customer_email !== input.email
+          existing.customer_email !== input.email ||
+          existing.customer_name !== input.name ||
+          existing.customer_phone !== input.phone
         )
           throw new PaymentError(
             409,
@@ -69,8 +71,8 @@ export class PaymentStore {
         [this.mode, input.name, input.email, input.phone],
       );
       await sql.query(
-        `INSERT INTO public.subscriptions(id,mode,member_id,session_hash,plan,policy_version,razorpay_plan_id,expected_amount)
-        VALUES($1,$2,$3,$4,$5,$6,$7,$8)`,
+        `INSERT INTO public.subscriptions(id,mode,member_id,session_hash,plan,policy_version,razorpay_plan_id,expected_amount,checkout_name,checkout_email,checkout_phone)
+        VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
         [
           input.requestId,
           this.mode,
@@ -80,6 +82,9 @@ export class PaymentStore {
           policyVersion,
           providerPlanId,
           expectedAmount,
+          input.name,
+          input.email,
+          input.phone,
         ],
       );
       const result = await sql.query(
@@ -255,6 +260,14 @@ export class PaymentStore {
         ELSE s.payment_status END WHERE s.mode=$1 AND s.id=ANY($2::uuid[])`,
         [this.mode, affected.rows.map((row) => row.id)],
       );
+      // Queue one welcome only after a full captured payment survives refunds.
+      if (work.grant && localId)
+        await sql.query(
+          `UPDATE public.subscriptions SET welcome_email_state='pending'
+          WHERE mode=$1 AND id=$2 AND checkout_email IS NOT NULL
+          AND welcome_email_state='not_required' AND payment_status='paid' AND paid_until>now()`,
+          [this.mode, localId],
+        );
       await sql.query(
         `UPDATE public.members m SET status=CASE
         WHEN EXISTS(SELECT 1 FROM public.subscriptions s WHERE s.mode=m.mode AND s.member_id=m.id AND s.paid_until>now()) THEN 'active'
@@ -281,9 +294,11 @@ export class PaymentStore {
                 String(row?.payment_status),
               )
             ? "not_active"
-            : row?.last_payment_id
-              ? "awaiting_full_payment"
-              : "pending",
+            : row?.payment_status === "failed"
+              ? "failed"
+              : row?.last_payment_id
+                ? "awaiting_full_payment"
+                : "pending",
       paidUntil: until?.toISOString() || null,
       mode: this.mode,
     } as const;

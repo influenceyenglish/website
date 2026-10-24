@@ -5,6 +5,7 @@ import Link from "next/link";
 import { plans, type PlanKey } from "@/content/site";
 import { loadRazorpay, type CheckoutResponse } from "./razorpay";
 import styles from "./Checkout.module.css";
+import { checkoutAttemptId } from "./attempt";
 
 type Created = {
   requestId: string;
@@ -25,15 +26,6 @@ async function post<T>(url: string, body: unknown): Promise<T> {
     throw new Error(data.error || "Payment request could not be completed.");
   return data as T;
 }
-function attemptId(plan: PlanKey, email: string) {
-  const key = `ie_checkout_${plan}_${email.toLowerCase()}`;
-  const existing = sessionStorage.getItem(key);
-  const id = existing || crypto.randomUUID();
-  sessionStorage.setItem(key, id);
-  sessionStorage.setItem("ie_latest_attempt", id);
-  return id;
-}
-
 export function CheckoutForm({ mode = "test" }: { mode?: "test" | "live" }) {
   const [plan, setPlan] = useState<PlanKey>("monthly");
   const [busy, setBusy] = useState(false);
@@ -60,7 +52,11 @@ export function CheckoutForm({ mode = "test" }: { mode?: "test" | "live" }) {
     };
     try {
       await loadRazorpay();
-      const requestId = attemptId(plan, email);
+      const requestId = await checkoutAttemptId(
+        plan,
+        { name, email, phone },
+        mode,
+      );
       setMessage("Preparing your subscription…");
       const created = await post<Created>("/api/razorpay/subscription", {
         requestId,

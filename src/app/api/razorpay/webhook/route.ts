@@ -4,6 +4,7 @@ import {
   billingEmailConfig,
   sendPendingBillingEmails,
 } from "@/lib/payments/billing-email";
+import { sendPendingWelcomeEmails } from "@/lib/payments/welcome-email";
 import { postgresDatabase } from "@/lib/payments/database";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -19,15 +20,27 @@ export async function POST(request: NextRequest) {
     );
     // Accepted webhook effects are committed before optional email delivery starts.
     after(async () => {
-      try {
-        const outcome = await sendPendingBillingEmails(
-          postgresDatabase(config.databaseUrl),
-          billingEmailConfig(),
-        );
-        if (outcome.state !== "processed")
-          console.info("billing_email_status", outcome.state);
-      } catch {
-        console.error("billing_email_dispatch_failed");
+      const db = postgresDatabase(config.databaseUrl);
+      const emailConfig = billingEmailConfig();
+      const jobs = [
+        [
+          "welcome",
+          () =>
+            sendPendingWelcomeEmails(db, {
+              ...emailConfig,
+              communityUrl: process.env.NEXT_PUBLIC_WHATSAPP_COMMUNITY_URL,
+            }),
+        ],
+        ["billing", () => sendPendingBillingEmails(db, emailConfig)],
+      ] as const;
+      for (const [label, send] of jobs) {
+        try {
+          const outcome = await send();
+          if (!["processed", "disabled_for_test"].includes(outcome.state))
+            console.info(label + "_email_status", outcome.state);
+        } catch {
+          console.error(label + "_email_dispatch_failed");
+        }
       }
     });
     return json(result);

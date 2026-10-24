@@ -52,12 +52,7 @@ export async function GET(request: NextRequest) {
     const attempt = await service.boundAttempt(id.data, session.hash);
     requireFresh(attempt.created_at);
     const paymentStatus = await store.status(attempt);
-    return json({
-      ...paymentStatus,
-      ...(paymentStatus.status === "active"
-        ? { studentName: attempt.customer_name }
-        : {}),
-    });
+    return json(paymentStatus);
   } catch (error) {
     return errorResponse(error);
   }

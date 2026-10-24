@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PaymentError } from "./types";
 import { newSessionToken, hash } from "./signatures";
-import { paymentConfig } from "./config";
+import { paymentConfig, PaymentConfigurationError } from "./config";
 import { postgresDatabase } from "./database";
 import { PaymentStore } from "./store";
 import { PaymentService } from "./service";
@@ -37,6 +37,13 @@ export function json(value: unknown, status = 200) {
   });
 }
 export function errorResponse(error: unknown) {
+  if (error instanceof PaymentConfigurationError) {
+    console.error("payment_configuration_invalid", {
+      code: error.code,
+      action: error.operatorMessage,
+    });
+    return json({ error: error.message, code: error.code }, error.status);
+  }
   if (error instanceof PaymentError)
     return json({ error: error.message }, error.status);
   console.error("payment_request_failed");

@@ -1,66 +1,102 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { communityInvite } from "@/lib/community";
+import {
+  joiningTutorialVideo,
+  joiningTutorialPoster,
+} from "@/content/onboarding";
 import styles from "@/app/payment-success/PaymentSuccess.module.css";
 
 type Status = {
-  status: "active" | "not_active" | "awaiting_full_payment" | "pending";
+  status:
+    "active" | "not_active" | "awaiting_full_payment" | "pending" | "failed";
   paidUntil: string | null;
   mode: "test" | "live";
-  studentName?: string;
 };
-function communityInvite() {
-  try {
-    const url = new URL(process.env.NEXT_PUBLIC_WHATSAPP_COMMUNITY_URL || "");
-    return url.protocol === "https:" && url.hostname === "chat.whatsapp.com"
-      ? url.href
-      : null;
-  } catch {
-    return null;
-  }
-}
 export function PaymentStatus() {
   const [result, setResult] = useState<Status | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const check = useCallback(async () => {
+  const [autoChecking, setAutoChecking] = useState(true);
+  const [retry, setRetry] = useState(0);
+  const [videoUnavailable, setVideoUnavailable] = useState(false);
+  useEffect(() => {
+    const controller = new AbortController();
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const deadline = Date.now() + 60_000;
+    let checks = 0;
     setLoading(true);
     setError("");
     setResult(null);
-    try {
-      const requestId = sessionStorage.getItem("ie_latest_attempt");
-      if (!requestId)
-        throw new Error(
-          "No checkout reference was found in this browser. A URL or redirect alone cannot confirm payment.",
+    setAutoChecking(true);
+    async function check() {
+      try {
+        const requestId = sessionStorage.getItem("ie_latest_attempt");
+        if (!requestId) {
+          if (!cancelled) {
+            setError("We couldn't find this checkout. Contact us if you paid.");
+            setAutoChecking(false);
+            setLoading(false);
+          }
+          return;
+        }
+        const response = await fetch(
+          `/api/razorpay/verify?requestId=${encodeURIComponent(requestId)}`,
+          {
+            cache: "no-store",
+            signal: AbortSignal.any([
+              controller.signal,
+              AbortSignal.timeout(8000),
+            ]),
+          },
         );
-      const response = await fetch(
-        `/api/razorpay/verify?requestId=${encodeURIComponent(requestId)}`,
-        { cache: "no-store", signal: AbortSignal.timeout(15000) },
-      );
-      const data = await response.json();
-      if (!response.ok)
-        throw new Error(data.error || "Payment status could not be checked.");
-      setResult(data);
-    } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Payment status is temporarily unavailable.",
-      );
-    } finally {
+        const data = await response.json();
+        if (cancelled) return;
+        if (!response.ok) {
+          setError(
+            response.status >= 500
+              ? "We couldn't check your payment. Please try again shortly."
+              : "We couldn't confirm this checkout. Contact us if you paid.",
+          );
+          if (response.status < 500) {
+            setAutoChecking(false);
+            setLoading(false);
+            return;
+          }
+        } else {
+          setError("");
+          setResult(data);
+          if (["active", "not_active"].includes(data.status)) {
+            setAutoChecking(false);
+            setLoading(false);
+            return;
+          }
+        }
+      } catch {
+        if (cancelled) return;
+        setError("We couldn't check your payment. Please try again shortly.");
+      }
+      if (cancelled) return;
       setLoading(false);
+      if (Date.now() < deadline) {
+        checks++;
+        timer = setTimeout(() => void check(), checks < 5 ? 2000 : 5000);
+      } else setAutoChecking(false);
     }
-  }, []);
-  useEffect(() => {
     void check();
-  }, [check]);
+    return () => {
+      cancelled = true;
+      controller.abort();
+      if (timer) clearTimeout(timer);
+    };
+  }, [retry]);
 
-  // A redirect or a checkout callback never selects this state. The session-bound
-  // API reads the subscription's paid period from the verified server record.
-  const paid = !loading && !error && result?.status === "active";
-  const invite = communityInvite();
-  const studentName =
-    typeof result?.studentName === "string" ? result.studentName.trim() : "";
+  const paid = result?.status === "active";
+  const invite = communityInvite(
+    process.env.NEXT_PUBLIC_WHATSAPP_COMMUNITY_URL,
+  );
   return (
     <section className={styles.content} aria-live="polite" aria-busy={loading}>
       <p className={styles.eyebrow}>Influency English</p>
@@ -102,19 +138,37 @@ export function PaymentStatus() {
           ? "Checking your payment..."
           : paid
             ? "Your payment has been received"
-            : result?.status === "not_active"
-              ? "Your membership is not active"
-              : "Payment verification is pending"}
+            : result?.status === "failed" && !autoChecking
+              ? "Payment not completed"
+              : result?.status === "not_active"
+                ? "Your membership is not active"
+                : "We're confirming your payment"}
       </h1>
       {paid ? (
         <>
-          <p className={styles.greeting}>
-            {studentName ? `Hi, ${studentName},` : "Hi there,"}
-          </p>
+          <p className={styles.greeting}>Welcome to Influency English!</p>
           <p className={styles.description}>
-            Your membership payment was verified successfully. You can now
-            request access to our private WhatsApp community.
+            Watch the video, then join our WhatsApp community.
           </p>
+          <figure className={styles.joiningVideo}>
+            {videoUnavailable ? (
+              <p className={styles.videoFallback}>
+                The video is unavailable. You can still join below.
+              </p>
+            ) : (
+              <video
+                src={joiningTutorialVideo}
+                poster={joiningTutorialPoster}
+                controls
+                playsInline
+                preload="metadata"
+                aria-label="Community joining video"
+                onError={() => setVideoUnavailable(true)}
+              >
+                Your browser cannot play this video. You can still join below.
+              </video>
+            )}
+          </figure>
           {invite ? (
             <a
               className={styles.cta}
@@ -154,10 +208,16 @@ export function PaymentStatus() {
               />
             </svg>
             <span>
-              Community access is subject to admin approval. Please join using
-              the same WhatsApp number used during registration.
+              Please join using the WhatsApp number entered at checkout. An
+              admin will approve your request shortly.
             </span>
           </p>
+          {result?.mode === "live" && (
+            <p className={styles.emailNote}>
+              We also email the joining link and next steps to your checkout
+              email address.
+            </p>
+          )}
           {result?.mode === "test" && (
             <p className={styles.testMode}>
               Test Mode &middot; No real payment was taken.
@@ -168,7 +228,7 @@ export function PaymentStatus() {
         <>
           {loading && (
             <p className={styles.description}>
-              Please wait while we securely confirm your membership payment.
+              Please wait while we confirm your payment.
             </p>
           )}
           {error && (
@@ -176,33 +236,40 @@ export function PaymentStatus() {
               {error}
             </p>
           )}
-          {!loading && result?.status === "awaiting_full_payment" && (
-            <p className={styles.description}>
-              Checkout authorisation was verified, but a full membership payment
-              has not yet been confirmed. A mandate or small authorisation
-              charge does not activate membership.
-            </p>
-          )}
-          {!loading && result?.status === "pending" && (
-            <p className={styles.description}>
-              Payment confirmation has not arrived yet. If you were charged,
-              allow a moment and check again. Contact support before making
-              another payment.
-            </p>
-          )}
+          {!loading &&
+            !error &&
+            [
+              "awaiting_full_payment",
+              "pending",
+              ...(autoChecking ? ["failed"] : []),
+            ].includes(result?.status || "") && (
+              <p className={styles.description}>
+                {autoChecking
+                  ? "Thanks! We're confirming your payment. This page will update automatically."
+                  : "We're still waiting for payment confirmation. You can close this page. We'll email you once confirmed. Please don't pay again."}
+              </p>
+            )}
           {!loading && result?.status === "not_active" && (
             <p className={styles.description}>
-              There is no current paid access period for this checkout. It may
-              have expired or been refunded. Contact support for help.
+              Your membership is not active. Contact our team if you need help
+              with this payment.
+            </p>
+          )}
+          {!loading && !autoChecking && result?.status === "failed" && (
+            <p className={styles.description}>
+              Your payment was not completed. If money was debited, contact our
+              team before trying again.
             </p>
           )}
           <div className={styles.actions}>
             <button
               type="button"
-              disabled={loading}
-              onClick={() => void check()}
+              disabled={loading || autoChecking}
+              onClick={() => setRetry((value) => value + 1)}
             >
-              Check again
+              {autoChecking
+                ? "Checking automatically..."
+                : "Check payment status"}
             </button>
             <Link href="/contact">Contact support</Link>
           </div>

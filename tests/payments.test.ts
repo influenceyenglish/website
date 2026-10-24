@@ -151,6 +151,15 @@ test("three-table persistence and signed payment webhooks", async (t) => {
       "utf8",
     ),
   );
+  await engine.exec(
+    await readFile(
+      new URL(
+        "../supabase/migrations/20261024090000_checkout_contact_and_welcome.sql",
+        import.meta.url,
+      ),
+      "utf8",
+    ),
+  );
   let failMemberUpdate = false;
   const adapt = (sql: {
     query: <T>(query: string, params?: unknown[]) => Promise<{ rows: T[] }>;
@@ -247,9 +256,22 @@ test("three-table persistence and signed payment webhooks", async (t) => {
       async () => {
         const f = await fixture();
         f.gateway.remote.id = "sub_second";
-        await f.service.create(
+        const corrected = await f.service.create(
           { ...f.input, requestId: randomUUID(), name: "Another name" },
           sessionHash,
+        );
+        assert.equal(corrected.customer_name, "Another name");
+        assert.equal(
+          (await f.store.findAttempt(f.input.requestId))?.customer_name,
+          "Test member",
+        );
+        await assert.rejects(
+          () =>
+            f.service.create(
+              { ...f.input, name: "Changed on same attempt" },
+              sessionHash,
+            ),
+          PaymentError,
         );
         assert.equal(await count("members"), 1);
         assert.equal(await count("subscriptions"), 2);
@@ -269,8 +291,24 @@ test("three-table persistence and signed payment webhooks", async (t) => {
         for (const plan of ["monthly", "yearly"] as const) {
           const f = await fixture(plan);
           assert.equal((await verify(f)).status, "awaiting_full_payment");
+          assert.equal(
+            (
+              await engine.query<{ welcome_email_state: string }>(
+                "SELECT welcome_email_state FROM subscriptions",
+              )
+            ).rows[0].welcome_email_state,
+            "not_required",
+          );
           assert.equal(await count("webhook_events"), 0);
           await f.deliver("evt_paid");
+          assert.equal(
+            (
+              await engine.query<{ welcome_email_state: string }>(
+                "SELECT welcome_email_state FROM subscriptions",
+              )
+            ).rows[0].welcome_email_state,
+            "pending",
+          );
           assert.equal((await f.store.status(f.attempt)).status, "active");
           assert.equal(
             (
@@ -503,7 +541,7 @@ test("three-table persistence and signed payment webhooks", async (t) => {
           "pending",
         );
         assert.equal(await count("webhook_events"), 1);
-        assert.equal((await f.store.status(f.attempt)).status, "pending");
+        assert.equal((await f.store.status(f.attempt)).status, "failed");
       },
     );
     await t.test(

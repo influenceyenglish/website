@@ -21,6 +21,15 @@ test("billing email durable claims, retry rules and mode-isolated internal recip
       "utf8",
     ),
   );
+  await engine.exec(
+    await readFile(
+      new URL(
+        "../supabase/migrations/20261024090000_checkout_contact_and_welcome.sql",
+        import.meta.url,
+      ),
+      "utf8",
+    ),
+  );
   const db: Database = {
     query: async (text, values) =>
       engine.query<Record<string, unknown>>(text, values),

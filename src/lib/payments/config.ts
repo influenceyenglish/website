@@ -11,6 +11,26 @@ export type PaymentConfig = {
   yearlyPlanId: string;
   databaseUrl: string;
 };
+export class PaymentConfigurationError extends PaymentError {
+  constructor(
+    public code: string,
+    public operatorMessage: string,
+    customerMessage: string,
+  ) {
+    super(
+      503,
+      `${customerMessage} Please contact support. Reference: ${code}.`,
+    );
+  }
+}
+
+function configurationError(
+  code: string,
+  action: string,
+  message: string,
+): never {
+  throw new PaymentConfigurationError(code, action, message);
+}
 export function paymentConfig(): PaymentConfig {
   const business = getBusinessDetails();
   const mode = process.env.RAZORPAY_MODE || "test";
@@ -45,18 +65,48 @@ export function paymentConfig(): PaymentConfig {
       503,
       "Online checkout is being configured. Please contact support.",
     );
-  if (
-    !keyId.startsWith(`rzp_${mode}_`) ||
-    (publicKeyId !== undefined && publicKeyId !== keyId) ||
-    !/^plan_[A-Za-z0-9]+$/.test(monthlyPlanId) ||
-    !/^plan_[A-Za-z0-9]+$/.test(yearlyPlanId) ||
-    monthlyPlanId === yearlyPlanId ||
-    keySecret === keyId ||
-    webhookSecret === keySecret
-  )
-    throw new PaymentError(
-      503,
-      "Payment configuration needs review. Please contact support.",
+  if (!keyId.startsWith(`rzp_${mode}_`))
+    configurationError(
+      "PAYMENT_KEY_MODE_MISMATCH",
+      "RAZORPAY_KEY_ID must use the rzp_test_ or rzp_live_ prefix matching RAZORPAY_MODE.",
+      "Checkout is configured with keys for a different payment mode.",
+    );
+  if (publicKeyId !== undefined && publicKeyId !== keyId)
+    configurationError(
+      "PAYMENT_PUBLIC_KEY_MISMATCH",
+      "NEXT_PUBLIC_RAZORPAY_KEY_ID must exactly match RAZORPAY_KEY_ID in this deployment. Update both in the same Vercel environment and redeploy.",
+      "The website and server checkout keys do not match.",
+    );
+  for (const [name, id] of [
+    ["RAZORPAY_PLAN_MONTHLY", monthlyPlanId],
+    ["RAZORPAY_PLAN_YEARLY", yearlyPlanId],
+  ]) {
+    if (!/^plan_[A-Za-z0-9]+$/.test(id))
+      configurationError(
+        name === "RAZORPAY_PLAN_MONTHLY"
+          ? "PAYMENT_MONTHLY_PLAN_INVALID"
+          : "PAYMENT_YEARLY_PLAN_INVALID",
+        `${name} must contain a Razorpay plan_ ID, not a price, subscription ID, quoted value or placeholder.`,
+        "A membership plan has an invalid checkout configuration.",
+      );
+  }
+  if (monthlyPlanId === yearlyPlanId)
+    configurationError(
+      "PAYMENT_PLAN_IDS_DUPLICATED",
+      "RAZORPAY_PLAN_MONTHLY and RAZORPAY_PLAN_YEARLY must point to different Razorpay plans.",
+      "Monthly and yearly checkout plans have been configured as the same plan.",
+    );
+  if (keySecret === keyId)
+    configurationError(
+      "PAYMENT_API_SECRET_INVALID",
+      "RAZORPAY_KEY_SECRET contains the key ID. Use the matching API key secret from Razorpay instead.",
+      "The payment API credentials need correction.",
+    );
+  if (webhookSecret === keySecret)
+    configurationError(
+      "PAYMENT_WEBHOOK_SECRET_REUSED",
+      "RAZORPAY_WEBHOOK_SECRET must match the webhook's dedicated signing secret and differ from RAZORPAY_KEY_SECRET. Update the webhook and Vercel together if necessary.",
+      "The payment notification credentials need correction.",
     );
   if (
     mode === "live" &&

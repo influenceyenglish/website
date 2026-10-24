@@ -1,7 +1,95 @@
 ﻿import test from "node:test";
 import assert from "node:assert/strict";
-import { paymentConfig } from "../src/lib/payments/config";
+import {
+  paymentConfig,
+  PaymentConfigurationError,
+} from "../src/lib/payments/config";
 import { PaymentError } from "../src/lib/payments/types";
+import { errorResponse } from "../src/lib/payments/http";
+
+test("configuration mismatches identify the exact setting without leaking credentials", async (t) => {
+  const prior = { ...process.env };
+  const baseline = {
+    RAZORPAY_MODE: "test",
+    RAZORPAY_KEY_ID: "rzp_test_privatefixture",
+    NEXT_PUBLIC_RAZORPAY_KEY_ID: "rzp_test_privatefixture",
+    RAZORPAY_KEY_SECRET: "secret-api-fixture",
+    RAZORPAY_WEBHOOK_SECRET: "secret-webhook-fixture",
+    RAZORPAY_PLAN_MONTHLY: "plan_monthly",
+    RAZORPAY_PLAN_YEARLY: "plan_yearly",
+    DATABASE_URL: "postgresql://private:password@example.invalid/isolated",
+  };
+  const cases = [
+    [
+      { RAZORPAY_KEY_ID: "rzp_live_privatefixture" },
+      "PAYMENT_KEY_MODE_MISMATCH",
+      "RAZORPAY_MODE",
+    ],
+    [
+      { NEXT_PUBLIC_RAZORPAY_KEY_ID: "rzp_test_other" },
+      "PAYMENT_PUBLIC_KEY_MISMATCH",
+      "NEXT_PUBLIC_RAZORPAY_KEY_ID",
+    ],
+    [
+      { RAZORPAY_PLAN_MONTHLY: "499" },
+      "PAYMENT_MONTHLY_PLAN_INVALID",
+      "RAZORPAY_PLAN_MONTHLY",
+    ],
+    [
+      { RAZORPAY_PLAN_YEARLY: "sub_wrong" },
+      "PAYMENT_YEARLY_PLAN_INVALID",
+      "RAZORPAY_PLAN_YEARLY",
+    ],
+    [
+      { RAZORPAY_PLAN_YEARLY: "plan_monthly" },
+      "PAYMENT_PLAN_IDS_DUPLICATED",
+      "RAZORPAY_PLAN_YEARLY",
+    ],
+    [
+      { RAZORPAY_KEY_SECRET: baseline.RAZORPAY_KEY_ID },
+      "PAYMENT_API_SECRET_INVALID",
+      "RAZORPAY_KEY_SECRET",
+    ],
+    [
+      { RAZORPAY_WEBHOOK_SECRET: baseline.RAZORPAY_KEY_SECRET },
+      "PAYMENT_WEBHOOK_SECRET_REUSED",
+      "RAZORPAY_WEBHOOK_SECRET",
+    ],
+  ] as const;
+  const logs: unknown[][] = [];
+  t.mock.method(console, "error", (...args: unknown[]) => logs.push(args));
+  try {
+    for (const [changes, code, variable] of cases) {
+      Object.assign(process.env, baseline, changes);
+      let failure: PaymentConfigurationError | undefined;
+      try {
+        paymentConfig();
+      } catch (error) {
+        assert(error instanceof PaymentConfigurationError);
+        failure = error;
+      }
+      assert(failure);
+      assert.equal(failure.code, code);
+      assert(failure.operatorMessage.includes(variable));
+      const response = errorResponse(failure);
+      assert.equal(response.status, 503);
+      const body = await response.json();
+      assert.equal(body.code, code);
+      const diagnostics = JSON.stringify({ body, logs });
+      for (const secret of [
+        baseline.RAZORPAY_KEY_SECRET,
+        baseline.RAZORPAY_WEBHOOK_SECRET,
+        baseline.DATABASE_URL,
+        baseline.RAZORPAY_KEY_ID,
+      ])
+        assert(!diagnostics.includes(secret));
+    }
+  } finally {
+    for (const key of Object.keys(process.env))
+      if (!(key in prior)) delete process.env[key];
+    Object.assign(process.env, prior);
+  }
+});
 test("Test Mode is the default, mode/key mismatches fail and unfinished identity blocks live checkout", () => {
   const prior = { ...process.env };
   Object.assign(process.env, {

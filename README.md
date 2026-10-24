@@ -168,7 +168,7 @@ No real credentials are included in this repository. Automated tests use synthet
 
 ### Delivery is a real operational step
 
-No onboarding outbox or sender is installed. WhatsApp, email, admin and authentication remain deferred. Live browser payment requests are blocked until shared rate limiting is configured. Test Mode never delivers real access.
+Verified live payments queue one branded welcome email with the WhatsApp community link. Per-checkout contact snapshots prevent old member details appearing on a corrected checkout; the result page checks payment status automatically. Internal billing alerts stay separate. Configure RESEND_API_KEY, RESEND_FROM and NEXT_PUBLIC_WHATSAPP_COMMUNITY_URL. Live checkout creation also requires writable KV_REST_API_URL/KV_REST_API_TOKEN settings. Community admission remains subject to admin approval; no admin dashboard or account authentication is installed. Test Mode sends no customer welcome email. See docs/payment-operations.md for retry and delivery checks.
 
 A session status page is not an authenticated member portal. Before using the ledger to protect private courses, connect your actual authentication system and community account identifiers.
 
@@ -206,3 +206,9 @@ See [the live payments setup guide](docs/live-payments.md) for the exact environ
 5. Import the repo into Vercel using the Next.js preset and default output settings. No deployment has been performed by this task. Test the approved production integration with a controlled payment and verify fulfilment/refund handling before promoting the funnel.
 
 Official references: [Subscriptions integration](https://razorpay.com/docs/payments/subscriptions/integration-guide/), [webhook validation/idempotency/order](https://razorpay.com/docs/webhooks/validate-test/), [subscription creation](https://razorpay.com/docs/api/payments/subscriptions/create-subscription/), [subscription webhook events](https://razorpay.com/docs/webhooks/subscriptions/), [invoice entity](https://razorpay.com/docs/api/payments/invoices/entity/).
+
+### Preview the joining page locally
+
+Start the app with `npm run dev`. In a second terminal, run `npm run preview:joining`. This opens the actual joining page in a separate Chrome window with a clearly labelled browser-only payment-status mock. All payment API writes are blocked in that browser; no payment, membership or email is created. The normal website and production verification are unchanged. Close the preview window when finished. If your local server uses another port, set `BASE_URL` for the preview command.
+
+The demo joining video is configured in `src/content/onboarding.ts` and currently uses `/videos/founder.mp4`. Replace that path with the real tutorial when ready. The player uses normal controls, sound on user playback and inline mobile playback; the WhatsApp button stays available if the video fails to load. Verified live welcome emails still contain the joining link.

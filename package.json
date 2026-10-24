@@ -14,7 +14,8 @@
     "payments:check": "node --conditions=react-server --import tsx scripts/check-payments.ts",
     "verify:site": "node scripts/verify-site.mjs",
     "verify:checkout": "node scripts/verify-checkout.mjs",
-    "emails:check": "node --conditions=react-server --import tsx scripts/check-billing-email.ts"
+    "emails:check": "node --conditions=react-server --import tsx scripts/check-billing-email.ts",
+    "preview:joining": "node scripts/preview-joining.mjs"
   },
   "keywords": [],
   "author": "",

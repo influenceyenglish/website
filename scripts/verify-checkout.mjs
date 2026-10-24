@@ -9,6 +9,10 @@ try {
     "monthly",
     "yearly",
     "pending",
+    "delayed",
+    "failed-retry",
+    "awaiting",
+    "retry-details",
     "dismiss",
     "verify-error",
     "load-error",
@@ -20,6 +24,8 @@ try {
     let creates = 0,
       verification = 0,
       chosen;
+    let statusChecks = 0;
+    const submitted = [];
     await page.route(
       "https://checkout.razorpay.com/v1/checkout.js",
       async (route) => {
@@ -34,6 +40,12 @@ try {
       creates++;
       const data = route.request().postDataJSON();
       chosen = data.plan;
+      submitted.push(data);
+      if (scenario === "retry-details" && creates === 1)
+        return route.fulfill({
+          status: 503,
+          json: { error: "Please try again." },
+        });
       assert.equal(data.consent, true);
       assert.equal(data.amount, undefined);
       assert.equal(data.plan_id, undefined);
@@ -49,6 +61,7 @@ try {
     });
     await page.route(verifyPath, (route) => {
       verification++;
+      if (route.request().method() === "GET") statusChecks++;
       if (scenario === "verify-error")
         return route.fulfill({
           status: 400,
@@ -59,7 +72,15 @@ try {
         });
       return route.fulfill({
         json: {
-          status: scenario === "pending" ? "pending" : "active",
+          status:
+            scenario === "failed-retry" && statusChecks < 3
+              ? "failed"
+              : scenario === "pending" ||
+                  (scenario === "delayed" && statusChecks < 3)
+                ? "pending"
+                : scenario === "awaiting"
+                  ? "awaiting_full_payment"
+                  : "active",
           mode: "test",
           studentName: "Browser test",
           paidUntil: new Date(Date.now() + 28 * 86400000).toISOString(),
@@ -81,6 +102,12 @@ try {
       .fill("browser@example.test");
     await page.locator('input[name="consent"]').check();
     await page.getByRole("button", { name: /Continue to payment/ }).click();
+    if (scenario === "retry-details") {
+      await page.locator('#join [role="alert"]').waitFor();
+      await page.getByLabel("Full name").fill("Corrected name");
+      await page.locator('input[name="phone"]').fill("+919876543211");
+      await page.getByRole("button", { name: /Continue to payment/ }).click();
+    }
     if (scenario === "dismiss") {
       await page.waitForURL("**/payment-cancelled");
       assert(
@@ -93,7 +120,7 @@ try {
       await page.waitForURL("**/payment-success");
       await page
         .getByText(
-          "Payment signature verification failed. Please contact support if money was debited.",
+          "We couldn't confirm this checkout. Contact us if you paid.",
           { exact: true },
         )
         .waitFor();
@@ -115,10 +142,10 @@ try {
           .isEnabled(),
         true,
       );
-    } else if (scenario === "pending") {
+    } else if (scenario === "pending" || scenario === "awaiting") {
       await page.waitForURL("**/payment-success");
       await page
-        .getByText("Payment confirmation has not arrived yet.", {
+        .getByText("This page will update automatically.", {
           exact: false,
         })
         .waitFor();
@@ -145,18 +172,47 @@ try {
           "No real payment was taken",
         ),
       );
-      await page.getByText("Hi, Browser test,", { exact: true }).waitFor();
+      await page
+        .getByText("Welcome to Influency English!", { exact: true })
+        .waitFor();
+      const video = page.getByLabel("Community joining video");
+      assert.equal(await video.getAttribute("src"), "/videos/founder.mp4");
+      assert.equal(await video.getAttribute("controls"), "");
+      assert.equal(await video.getAttribute("autoplay"), null);
+      assert(
+        !(await page.locator("main").innerText()).includes("Browser test,"),
+      );
       const community = page.getByRole("link", {
         name: "Join WhatsApp Community",
       });
+      assert(
+        await video.evaluate((element) => {
+          const button = document.querySelector(
+            'a[href^="https://chat.whatsapp.com/"]',
+          );
+          return (
+            !!button &&
+            !!(
+              element.compareDocumentPosition(button) &
+              Node.DOCUMENT_POSITION_FOLLOWING
+            )
+          );
+        }),
+      );
       assert.equal(await community.getAttribute("target"), "_blank");
       assert(
         (await community.getAttribute("href")).startsWith(
           "https://chat.whatsapp.com/",
         ),
       );
-      assert.equal(chosen, scenario);
-      assert.equal(creates, 1);
+      assert.equal(chosen, scenario === "yearly" ? "yearly" : "monthly");
+      assert.equal(creates, scenario === "retry-details" ? 2 : 1);
+      if (scenario === "delayed" || scenario === "failed-retry")
+        assert(statusChecks >= 3);
+      if (scenario === "retry-details") {
+        assert.notEqual(submitted[0].requestId, submitted[1].requestId);
+        assert.equal(submitted[1].name, "Corrected name");
+      }
       assert(verification >= 2);
     }
     await page.close();
@@ -164,7 +220,7 @@ try {
   const spoof = await browser.newPage();
   await spoof.goto(base + "/payment-success?success=true&payment_id=pay_fake");
   await spoof
-    .getByText("No checkout reference was found in this browser.", {
+    .getByText("We couldn't find this checkout. Contact us if you paid.", {
       exact: false,
     })
     .waitFor();
@@ -179,7 +235,7 @@ try {
   );
   await spoof.close();
   console.log(
-    "Checkout UX mocks passed: monthly/yearly, dismissal, script failure, verification failure, test-mode messaging and redirect spoofing. No real Razorpay payment was made.",
+    "Checkout UX mocks passed: monthly/yearly, edited-contact retries, automatic delayed confirmation, failed-to-paid retry, mandate-only pending, dismissal, script/verification errors and spoofed results. No real Razorpay payment was made.",
   );
 } finally {
   await browser.close();

@@ -1,6 +1,7 @@
 import { loadEnvConfig } from "@next/env";
 import { Pool } from "pg";
 import { PaymentError } from "../src/lib/payments/types";
+import { PaymentConfigurationError } from "../src/lib/payments/config";
 
 class ConfigurationCheckError extends Error {}
 
@@ -124,9 +125,12 @@ async function main() {
 main().catch((error: unknown) => {
   // Only our controlled messages reach output; never log SDK/database errors.
   console.error(
-    error instanceof ConfigurationCheckError || error instanceof PaymentError
-      ? error.message
-      : "Payment configuration could not be verified.",
+    error instanceof PaymentConfigurationError
+      ? `${error.code}: ${error.operatorMessage}`
+      : error instanceof ConfigurationCheckError ||
+          error instanceof PaymentError
+        ? error.message
+        : "Payment configuration could not be verified.",
   );
   process.exitCode = 1;
 });

@@ -7,6 +7,7 @@ export type BillingEmail = {
   to: string;
   subject: string;
   text: string;
+  html?: string;
 };
 export type BillingSend = (
   message: BillingEmail,
@@ -22,30 +23,7 @@ export async function sendPendingBillingEmails(
 ) {
   if (!config.apiKey?.trim() && !send)
     return { state: "missing_api_key", sent: 0 };
-  const resend = send ? null : new Resend(config.apiKey);
-  const deliver: BillingSend =
-    send ||
-    (async (message, key) => {
-      const result = await resend!.emails.send(message, {
-        idempotencyKey: key,
-      });
-      if (result.error) {
-        // Unknown transport/server outcomes remain 'sending' for manual reconciliation.
-        const definiteFailure = [
-          "validation_error",
-          "missing_required_field",
-          "invalid_parameter",
-          "invalid_access",
-          "invalid_api_key",
-          "restricted_api_key",
-          "missing_api_key",
-          "not_found",
-          "rate_limit_exceeded",
-        ].includes(result.error.name);
-        return { accepted: false, definiteFailure };
-      }
-      return { accepted: !!result.data?.id };
-    });
+  const deliver = send || resendSender(config.apiKey!);
   let sent = 0;
   for (let i = 0; i < 10; i++) {
     // Commit the durable claim before contacting Resend; no network calls inside a transaction.
@@ -53,7 +31,7 @@ export async function sendPendingBillingEmails(
       `UPDATE public.subscriptions s SET failure_email_state='sending',updated_at=now()
       WHERE s.id=(SELECT q.id FROM public.subscriptions q WHERE q.mode=$1 AND q.failure_email_state IN ('pending','failed')
       ORDER BY q.created_at LIMIT 1 FOR UPDATE SKIP LOCKED)
-      RETURNING s.id,s.plan,s.razorpay_subscription_id,s.member_id`,
+      RETURNING s.id,s.plan,s.razorpay_subscription_id,s.member_id,s.checkout_name,s.checkout_email,s.checkout_phone`,
       [config.mode],
     );
     const row = claimed.rows[0];
@@ -72,9 +50,9 @@ export async function sendPendingBillingEmails(
           ? "TEST MODE: no real payment or community access."
           : "LIVE MODE: review this payment failure in Razorpay.",
         "A verified Razorpay payment failure requires one internal follow-up.",
-        `Name: ${contact?.full_name || "Unavailable"}`,
-        `Email: ${contact?.email || "Unavailable"}`,
-        `Phone: ${contact?.phone || "Unavailable"}`,
+        `Name: ${row.checkout_name || contact?.full_name || "Unavailable"}`,
+        `Email: ${row.checkout_email || contact?.email || "Unavailable"}`,
+        `Phone: ${row.checkout_phone || contact?.phone || "Unavailable"}`,
         `Plan: ${row.plan}`,
         `Local reference: ${row.id}`,
         `Razorpay subscription: ${row.razorpay_subscription_id}`,
@@ -120,5 +98,30 @@ export function billingEmailConfig() {
     from:
       process.env.RESEND_FROM?.trim() ||
       "Influency English Billing <billing@influenceyenglish.com>",
+  };
+}
+
+export function resendSender(apiKey: string): BillingSend {
+  const resend = new Resend(apiKey);
+  return async (message, key) => {
+    const result = await resend.emails.send(message, {
+      idempotencyKey: key,
+    });
+    if (result.error) {
+      // Unknown transport/server outcomes remain 'sending' for manual reconciliation.
+      const definiteFailure = [
+        "validation_error",
+        "missing_required_field",
+        "invalid_parameter",
+        "invalid_access",
+        "invalid_api_key",
+        "restricted_api_key",
+        "missing_api_key",
+        "not_found",
+        "rate_limit_exceeded",
+      ].includes(result.error.name);
+      return { accepted: false, definiteFailure };
+    }
+    return { accepted: !!result.data?.id };
   };
 }

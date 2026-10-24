@@ -351,7 +351,7 @@ export const faqs = [
   {
     question: "How do I get access and the session schedule?",
     answer:
-      "After a full membership payment is verified, onboarding instructions and community access details are sent to the email used at checkout within 2 business days. Sessions and resources are delivered online. The final platform, live-session timings and course catalogue must be confirmed before live enrolment opens.",
+      "After your payment is confirmed, you will receive a welcome email with the WhatsApp community link. Join using the number entered at checkout. An admin will approve your request and share your session details.",
   },
   {
     question: "Can I cancel anytime?",

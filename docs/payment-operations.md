@@ -1,6 +1,6 @@
 # Payment operations
 
-The app uses only members, subscriptions and webhook_events through pg and DATABASE_URL. Resend sends internal failure follow-ups only. No outbox, admin dashboard or authentication is installed.
+The app uses only members, subscriptions and webhook_events through pg and DATABASE_URL. Resend sends internal failure follow-ups and verified live customer welcome emails. No outbox, admin dashboard or authentication is installed.
 
 ## Test setup
 
@@ -26,10 +26,36 @@ Review ambiguous creation timeouts in Razorpay using checkout_attempt_id notes; 
 
 ## Email retry boundaries
 
-Each subscription has one failure follow-up state. A committed sending claim and a stable Resend idempotency key prevent concurrent sends. Definite provider rejections become failed and can be retried. A timeout, unknown provider outcome or crash leaves sending for manual reconciliation in Resend; do not blindly reset it. Resend retains idempotency keys for 24 hours. Live internal email dispatch is enabled. Customer confirmation/onboarding emails remain optional phase 2 work. Email delivery never grants or removes membership and never determines payment success: Razorpay verification and committed database payment facts remain authoritative. Email delivery runs after accepted webhook effects commit, and delivery errors are caught without changing the webhook response.
+Each subscription has one failure follow-up state. A committed sending claim and a stable Resend idempotency key prevent concurrent sends. Definite provider rejections become failed and can be retried. A timeout, unknown provider outcome or crash leaves sending for manual reconciliation in Resend; do not blindly reset it. Resend retains idempotency keys for 24 hours. Live internal email dispatch is enabled. Live customer welcome emails are enabled for new checkouts after verified full payment; see the welcome email section below. Email delivery never grants or removes membership and never determines payment success: Razorpay verification and committed database payment facts remain authoritative. Email delivery runs after accepted webhook effects commit, and delivery errors are caught without changing the webhook response.
 
 ## Email environment and audit checks
 
 Set server-only RESEND_API_KEY and RESEND_FROM in Vercel Production, then redeploy. RESEND_FROM defaults to Influency English Billing <billing@influenceyenglish.com> when omitted; its sender domain must be verified in Resend. DATABASE_URL is also required by the existing payment flow. No new recipient environment variable is needed. A missing Resend key leaves the alert pending and logs billing_email_status=missing_api_key; payment processing continues.
 
 The dispatcher retains one internal failure follow-up per subscription. It is triggered by verified payment.failed (when associated with an invoice/subscription), subscription.pending, or subscription.halted events. Initial checkout failures that cannot be associated with an owned subscription still need manual reconciliation. There is no scheduled retry worker: subsequent accepted webhooks or the explicit dispatcher command retry pending/definitively failed records. Unknown outcomes remain sending for manual review to avoid duplicate emails. Monitor Resend delivery/bounce events separately; API acceptance is not inbox delivery.
+
+## Diagnosing checkout configuration mismatches
+
+Configuration checks run before Redis, database queries and Razorpay API calls. The browser now receives a safe explanation and reference code. Vercel runtime logs record `payment_configuration_invalid` with the code and an action naming the setting to fix; credential values are never logged.
+
+| Reference                     | Check in Vercel Production                                          |
+| ----------------------------- | ------------------------------------------------------------------- |
+| PAYMENT_KEY_MODE_MISMATCH     | RAZORPAY_KEY_ID prefix matches RAZORPAY_MODE                        |
+| PAYMENT_PUBLIC_KEY_MISMATCH   | NEXT_PUBLIC_RAZORPAY_KEY_ID exactly equals RAZORPAY_KEY_ID          |
+| PAYMENT_MONTHLY_PLAN_INVALID  | RAZORPAY_PLAN_MONTHLY contains a plan_ ID                           |
+| PAYMENT_YEARLY_PLAN_INVALID   | RAZORPAY_PLAN_YEARLY contains a plan_ ID                            |
+| PAYMENT_PLAN_IDS_DUPLICATED   | Monthly and yearly use different plan IDs                           |
+| PAYMENT_API_SECRET_INVALID    | RAZORPAY_KEY_SECRET is the API secret, not the key ID               |
+| PAYMENT_WEBHOOK_SECRET_REUSED | The webhook uses its dedicated secret, distinct from the API secret |
+
+After changing environment values, redeploy and reproduce once. Open Vercel project Logs and filter for payment_configuration_invalid. The read-only `npm run payments:check` script also prints the detailed action when run with the affected environment. Do not paste secrets into support messages; share the reference code only.
+
+## Checkout details and welcome emails
+
+The additive checkout_contact_and_welcome migration adds per-checkout name/email/phone snapshots and welcome delivery state to subscriptions. It preserves historical payment data and does not backfill contacts or queue old welcome messages. The saved member identity is not overwritten by anonymous form edits. Corrected form details use a new browser checkout reference; exact retries reuse their own reference.
+
+The result page uses a neutral welcome and automatically checks the session-bound database status for up to one minute. Pending or mandate-only status never shows payment received. The page keeps checking through earlier failure states so a successful retry can be confirmed. Closing the page does not stop server-side webhook processing or welcome delivery.
+
+Only verified captured payments with current, unrefunded paid access queue a welcome, once per subscription. The welcome uses the checkout email snapshot, includes the charged plan amount and WhatsApp link, and uses RESEND_API_KEY, RESEND_FROM and NEXT_PUBLIC_WHATSAPP_COMMUNITY_URL. Test Mode never sends customer welcome emails. Missing settings leave the welcome pending without changing access. Sent means accepted by Resend, not inbox delivery; check Resend delivery logs.
+
+Welcome dispatch runs after the webhook response, separately from internal failure alerts. npm run emails:check -- --live also retries pending/definitively failed welcome and billing emails using the configured live environment. Unknown delivery outcomes remain sending for manual review, avoiding blind duplicate sends after the provider idempotency window. There is no scheduled retry worker. No customer failure email is sent.
