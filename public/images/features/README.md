@@ -6,5 +6,5 @@
 - shadow-writing.jpg: Unsplash photo-1456324504439-367cee3b3c32.
 - daily-quiz.jpg: Unsplash photo-1516321318423-f06f85e504b3.
 
-Stock photos illustrate activities; they are not presented as Influency English member testimonials.
+Stock photos illustrate activities; they are not presented as Influencey English member testimonials.
 Source format: https://images.unsplash.com/<photo-id>. Local downloads use 1000 x 650 landscape crops.

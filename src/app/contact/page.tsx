@@ -4,14 +4,14 @@ import { DocumentShell } from "@/components/legal/DocumentShell";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Contact Influency English for membership, billing, cancellation or privacy support.",
+    "Contact Influencey English for membership, billing, cancellation or privacy support.",
   alternates: { canonical: "/contact" },
 };
 export default function ContactPage() {
   return (
     <DocumentShell
       title="Let’s talk."
-      description="Questions about practice, joining or a payment? Contact Influency English directly."
+      description="Questions about practice, joining or a payment? Contact Influencey English directly."
     >
       <section>
         <h2>Membership & support</h2>

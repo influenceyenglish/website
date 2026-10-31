@@ -10,9 +10,9 @@ import styles from "./Hero.module.css";
 
 export function Hero() {
   return (
-    <section className={styles.hero} aria-label="Welcome to Influency English">
+    <section className={styles.hero} aria-label="Welcome to Influencey English">
       <Reveal className={styles.navigation} y={-60} trigger="mount">
-        <a href="#" className={styles.logo} aria-label="Influency English home">
+        <a href="#" className={styles.logo} aria-label="Influencey English home">
           <Image
             src="/images/influencey-english.svg"
             alt={site.name}

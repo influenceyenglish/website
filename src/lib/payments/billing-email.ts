@@ -44,7 +44,7 @@ export async function sendPendingBillingEmails(
     const message: BillingEmail = {
       from: config.from,
       to: billingRecipient,
-      subject: `${config.mode === "test" ? "[TEST] " : ""}Influency English payment failure - internal follow-up`,
+      subject: `${config.mode === "test" ? "[TEST] " : ""}Influencey English payment failure - internal follow-up`,
       text: [
         config.mode === "test"
           ? "TEST MODE: no real payment or community access."
@@ -97,7 +97,7 @@ export function billingEmailConfig() {
     apiKey: process.env.RESEND_API_KEY,
     from:
       process.env.RESEND_FROM?.trim() ||
-      "Influency English Billing <billing@influenceyenglish.com>",
+      "Influencey English Billing <billing@influenceyenglish.com>",
   };
 }
 

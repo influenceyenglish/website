@@ -36,7 +36,7 @@ test("welcome delivery is live-only, paid-only, durable and independent of membe
   const config = {
     mode: "live" as const,
     apiKey: "synthetic",
-    from: "Influency English <billing@example.test>",
+    from: "Influencey English <billing@example.test>",
     communityUrl: "https://chat.whatsapp.com/ValidInvite",
   };
   async function fixture(mode = "live", payment = "paid") {

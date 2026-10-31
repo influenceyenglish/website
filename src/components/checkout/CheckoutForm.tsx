@@ -91,7 +91,7 @@ export function CheckoutForm({ mode = "test" }: { mode?: "test" | "live" }) {
       const razorpay = new window.Razorpay({
         key: created.keyId,
         subscription_id: created.subscriptionId,
-        name: "Influency English",
+        name: "Influencey English",
         description: `${selected.label} English-speaking community${created.mode === "test" ? " · TEST MODE" : ""}`,
         prefill: { name, email, ...(phone ? { contact: phone } : {}) },
         theme: {

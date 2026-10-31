@@ -12,7 +12,7 @@ try {
     await p.goto(base, { waitUntil: "networkidle" });
     await p.waitForTimeout(1600);
     const body = await p.locator("body").innerText();
-    assert(body.includes("Influency English"));
+    assert(body.includes("Influencey English"));
     assert(body.includes("₹499"));
     await p.locator('input[name="plan"][value="yearly"]').check();
     await p.getByText("₹399", { exact: true }).waitFor();

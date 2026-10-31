@@ -16,7 +16,7 @@ RAZORPAY_PLAN_MONTHLY=plan_REPLACE_WITH_LIVE_MONTHLY_PLAN_ID
 RAZORPAY_PLAN_YEARLY=plan_REPLACE_WITH_LIVE_YEARLY_PLAN_ID
 RAZORPAY_WEBHOOK_SECRET=REPLACE_WITH_A_SEPARATE_RANDOM_WEBHOOK_SECRET
 RESEND_API_KEY=re_REPLACE_WITH_YOUR_RESEND_KEY
-RESEND_FROM="Influency English Billing <billing@influenceyenglish.com>"
+RESEND_FROM="Influencey English Billing <billing@influenceyenglish.com>"
 KV_REST_API_URL=https://YOUR_REDIS_REST_ENDPOINT
 KV_REST_API_TOKEN=REPLACE_WITH_YOUR_REDIS_REST_TOKEN
 DATABASE_URL=REPLACE_WITH_YOUR_PRODUCTION_POSTGRES_CONNECTION_URL
@@ -26,7 +26,7 @@ NEXT_PUBLIC_SITE_URL=https://YOUR_PRODUCTION_DOMAIN
 
 For localhost, use `http://localhost:3000` for **both** website URLs and open that exact hostname in the browser. A Live Mode checkout takes real money, including on localhost. Use a separate test database and test credentials for normal development. Hosted Live Mode requires HTTPS. The app blocks Live Mode in Vercel Preview/Development deployments; keep those environments on Test Mode.
 
-The operator has confirmed the legal name **VALIYAKKATHODI MOHAMMED KOYA MOHAMED HASHIM THANGAL**, business type **Individual**, Razorpay brand **MOHAMED HASHIM**, and public brand **Influency English**. These are already configured in `src/content/business.ts`. Access is through the Influency English community, with live practice online and timings shared with members after joining. A fixed timetable is not required to open checkout.
+The operator has confirmed the legal name **VALIYAKKATHODI MOHAMMED KOYA MOHAMED HASHIM THANGAL**, business type **Individual**, Razorpay brand **MOHAMED HASHIM**, and public brand **Influencey English**. These are already configured in `src/content/business.ts`. Access is through the Influencey English community, with live practice online and timings shared with members after joining. A fixed timetable is not required to open checkout.
 
 Optional environment overrides are `BUSINESS_LEGAL_NAME`, `BUSINESS_DELIVERY_PLATFORM`, and `BUSINESS_DETAILS_CONFIRMED`. Leave them unset to use the confirmed defaults. Set `BUSINESS_DETAILS_CONFIRMED=false` only if the business details need review. Changes to public business details require rebuilding/redeploying. Razorpay may display its approved merchant brand independently of the website's Checkout name.
 

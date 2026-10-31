@@ -1,6 +1,7 @@
 ﻿import { site } from "@/content/site";
 import { AnimatedText } from "@/components/motion/AnimatedText";
 import { Reveal } from "@/components/motion/Reveal";
+import { VideoPlayer } from "@/components/VideoPlayer";
 import styles from "./Founder.module.css";
 export function Founder() {
   return (
@@ -25,12 +26,9 @@ export function Founder() {
       </div>
       <div className={`rounded-2xl overflow-hidden`}>
         <Reveal>
-          <img
-            src="/images/founder.webp"
-            alt="Influency English founder, Haris"
-            width={400}
-            height={400}
-            className={`object-cover w-full h-full`}
+          <VideoPlayer
+            src="/videos/hashim-founder.mp4#t=0.001"
+            label="Hi"
           />
         </Reveal>
       </div>

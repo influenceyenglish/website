@@ -36,7 +36,7 @@ export function welcomeMessage(
   }).format(amount / 100);
   const summary = `${plan === "yearly" ? "Yearly" : "Monthly"} membership · ${price}`;
   const text = [
-    "Welcome to Influency English!",
+    "Welcome to Influencey English!",
     "Your payment has been received.",
     summary,
     "Join our WhatsApp community:",
@@ -48,9 +48,9 @@ export function welcomeMessage(
   return {
     from,
     to,
-    subject: "Welcome to Influency English",
+    subject: "Welcome to Influencey English",
     text,
-    html: `<!doctype html><html><body style="margin:0;background:#f5f7fb;font-family:Arial,sans-serif;color:#12305a"><table role="presentation" style="width:100%;padding:32px 16px"><tr><td align="center"><table role="presentation" style="width:100%;max-width:560px;background:#fff;border-radius:16px;overflow:hidden"><tr><td style="padding:28px 32px;background:#01408f;color:#fff;font-size:22px;font-weight:bold">Influency English<span style="color:#e50110">.</span></td></tr><tr><td style="padding:32px"><h1 style="font-size:28px;line-height:1.2;margin:0 0 20px">Welcome to the community</h1><p style="line-height:1.7">Your payment has been received. We’re glad you’re here.</p><p style="padding:16px;background:#f0f4fa;border-radius:8px;font-weight:bold">${escapeHtml(summary)}</p><p style="line-height:1.7">Join our WhatsApp community to get started.</p><p style="margin:28px 0"><a href="${escapeHtml(invite)}" style="display:inline-block;background:#01408f;color:#fff;padding:16px 22px;text-decoration:none;border-radius:8px;font-weight:bold">Join WhatsApp Community</a></p><p style="line-height:1.7">Please use the WhatsApp number entered at checkout. An admin will approve your request shortly.</p><p style="line-height:1.7">Our team will share your session details in the community.</p><hr style="border:0;border-top:1px solid #dce4ef;margin:28px 0"><p style="font-size:14px;line-height:1.7">Need help? <a href="mailto:hello@influenceyenglish.com" style="color:#01408f">Contact our team</a>.</p></td></tr></table></td></tr></table></body></html>`,
+    html: `<!doctype html><html><body style="margin:0;background:#f5f7fb;font-family:Arial,sans-serif;color:#12305a"><table role="presentation" style="width:100%;padding:32px 16px"><tr><td align="center"><table role="presentation" style="width:100%;max-width:560px;background:#fff;border-radius:16px;overflow:hidden"><tr><td style="padding:28px 32px;background:#01408f;color:#fff;font-size:22px;font-weight:bold">Influencey English<span style="color:#e50110">.</span></td></tr><tr><td style="padding:32px"><h1 style="font-size:28px;line-height:1.2;margin:0 0 20px">Welcome to the community</h1><p style="line-height:1.7">Your payment has been received. We’re glad you’re here.</p><p style="padding:16px;background:#f0f4fa;border-radius:8px;font-weight:bold">${escapeHtml(summary)}</p><p style="line-height:1.7">Join our WhatsApp community to get started.</p><p style="margin:28px 0"><a href="${escapeHtml(invite)}" style="display:inline-block;background:#01408f;color:#fff;padding:16px 22px;text-decoration:none;border-radius:8px;font-weight:bold">Join WhatsApp Community</a></p><p style="line-height:1.7">Please use the WhatsApp number entered at checkout. An admin will approve your request shortly.</p><p style="line-height:1.7">Our team will share your session details in the community.</p><hr style="border:0;border-top:1px solid #dce4ef;margin:28px 0"><p style="font-size:14px;line-height:1.7">Need help? <a href="mailto:hello@influenceyenglish.com" style="color:#01408f">Contact our team</a>.</p></td></tr></table></td></tr></table></body></html>`,
   };
 }
 

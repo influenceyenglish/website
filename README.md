@@ -60,7 +60,7 @@ Student proof, Hashim’s portrait and his detailed personal story are honest pl
 
 ## Policy/business details to confirm
 
-`business.ts` contains the operator-confirmed individual merchant identity and community delivery details. Speaking/practice sessions are online, with timings shared after joining. Legal disclosures use the approved merchant name; public branding uses Influency English. Optional environment overrides are documented in the live payments guide.
+`business.ts` contains the operator-confirmed individual merchant identity and community delivery details. Speaking/practice sessions are online, with timings shared after joining. Legal disclosures use the approved merchant name; public branding uses Influencey English. Optional environment overrides are documented in the live payments guide.
 
 Provisional terms requiring owner confirmation:
 
@@ -211,4 +211,4 @@ Official references: [Subscriptions integration](https://razorpay.com/docs/payme
 
 Start the app with `npm run dev`. In a second terminal, run `npm run preview:joining`. This opens the actual joining page in a separate Chrome window with a clearly labelled browser-only payment-status mock. All payment API writes are blocked in that browser; no payment, membership or email is created. The normal website and production verification are unchanged. Close the preview window when finished. If your local server uses another port, set `BASE_URL` for the preview command.
 
-The demo joining video is configured in `src/content/onboarding.ts` and currently uses `/videos/founder.mp4`. Replace that path with the real tutorial when ready. The player uses normal controls, sound on user playback and inline mobile playback; the WhatsApp button stays available if the video fails to load. Verified live welcome emails still contain the joining link.
+The joining welcome video is configured in `src/content/onboarding.ts` and uses `/videos/hashim-welcome.mp4`. The About section uses `/videos/hashim-founder.mp4`. Both players start only on a tap or click, then show normal controls with sound and inline mobile playback; the WhatsApp button stays available if the video fails to load. Verified live welcome emails still contain the joining link.

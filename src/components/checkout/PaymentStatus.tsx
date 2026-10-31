@@ -1,11 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { VideoPlayer } from "@/components/VideoPlayer";
 import { communityInvite } from "@/lib/community";
-import {
-  joiningTutorialVideo,
-  joiningTutorialPoster,
-} from "@/content/onboarding";
+import { joiningTutorialVideo } from "@/content/onboarding";
 import styles from "@/app/payment-success/PaymentSuccess.module.css";
 
 type Status = {
@@ -20,7 +18,6 @@ export function PaymentStatus() {
   const [error, setError] = useState("");
   const [autoChecking, setAutoChecking] = useState(true);
   const [retry, setRetry] = useState(0);
-  const [videoUnavailable, setVideoUnavailable] = useState(false);
   useEffect(() => {
     const controller = new AbortController();
     let cancelled = false;
@@ -99,7 +96,6 @@ export function PaymentStatus() {
   );
   return (
     <section className={styles.content} aria-live="polite" aria-busy={loading}>
-      <p className={styles.eyebrow}>Influency English</p>
       <div className={styles.icon} aria-hidden="true">
         <svg
           width="38"
@@ -146,28 +142,16 @@ export function PaymentStatus() {
       </h1>
       {paid ? (
         <>
-          <p className={styles.greeting}>Welcome to Influency English!</p>
+          <p className={styles.greeting}>Welcome to Influencey English!</p>
           <p className={styles.description}>
             Watch the video, then join our WhatsApp community.
           </p>
           <figure className={styles.joiningVideo}>
-            {videoUnavailable ? (
-              <p className={styles.videoFallback}>
-                The video is unavailable. You can still join below.
-              </p>
-            ) : (
-              <video
-                src={joiningTutorialVideo}
-                poster={joiningTutorialPoster}
-                controls
-                playsInline
-                preload="metadata"
-                aria-label="Community joining video"
-                onError={() => setVideoUnavailable(true)}
-              >
-                Your browser cannot play this video. You can still join below.
-              </video>
-            )}
+            <VideoPlayer
+              src={joiningTutorialVideo}
+              label="Community joining video"
+              fallback="The video is unavailable. You can still join below."
+            />
           </figure>
           {invite ? (
             <a
@@ -176,7 +160,24 @@ export function PaymentStatus() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Join WhatsApp Community <span aria-hidden="true">&rarr;</span>
+              <svg
+                className={styles.whatsappIcon}
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <path
+                  fill="#25D366"
+                  d="M12 2a10 10 0 0 0-8.66 15L2 22l5.14-1.35A10 10 0 1 0 12 2Z"
+                />
+                <path
+                  fill="#fff"
+                  d="M8.1 6.8c-.2-.5-.4-.5-.7-.5h-.6c-.2 0-.5.1-.7.3-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.2 5 4.4 2.4 1 3 .8 3.6.7.6-.1 1.8-.7 2-1.4.3-.7.3-1.3.2-1.4-.1-.2-.3-.2-.6-.4l-1.8-.8c-.3-.1-.5-.2-.7.2l-.9 1c-.2.2-.3.2-.6.1-.3-.2-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.1-.3 0-.5.2-.6l.5-.6.3-.5c.1-.2 0-.4 0-.6l-.9-2.1Z"
+                />
+              </svg>
+              <span>Join WhatsApp Community</span>
             </a>
           ) : (
             <p className={styles.description}>
@@ -212,12 +213,6 @@ export function PaymentStatus() {
               admin will approve your request shortly.
             </span>
           </p>
-          {result?.mode === "live" && (
-            <p className={styles.emailNote}>
-              We also email the joining link and next steps to your checkout
-              email address.
-            </p>
-          )}
           {result?.mode === "test" && (
             <p className={styles.testMode}>
               Test Mode &middot; No real payment was taken.

@@ -10,7 +10,7 @@ export const policies = {
   "privacy-policy": {
     title: "Privacy policy",
     description:
-      "How Influency English handles contact, membership and payment-related information.",
+      "How Influencey English handles contact, membership and payment-related information.",
     sections: [
       {
         heading: "Who handles your information",
@@ -62,7 +62,7 @@ export const policies = {
   terms: {
     title: "Terms of service",
     description:
-      "Membership scope, delivery, participation and service terms for Influency English.",
+      "Membership scope, delivery, participation and service terms for Influencey English.",
     sections: [
       {
         heading: "Service provider",
@@ -78,7 +78,7 @@ export const policies = {
       {
         heading: "What you are subscribing to",
         paragraphs: [
-          "Influency English is an online English-speaking practice community, primarily designed for people beginning their careers, with a focus on men. Both plans include public-speaking practice, weekly mastermind discussions, communication courses/resources, speaker-identity training, live public-speaking opportunities, corrective feedback and community support.",
+          "Influencey English is an online English-speaking practice community, primarily designed for people beginning their careers, with a focus on men. Both plans include public-speaking practice, weekly mastermind discussions, communication courses/resources, speaker-identity training, live public-speaking opportunities, corrective feedback and community support.",
           "The Corrective Feedback Loop (CFL) uses speaking, feedback, correction and repetition. It is inspired by natural learning through interaction. Participation may help develop communication skills; we do not guarantee fluency by a deadline, employment, promotion or other results. Student story placeholders are not testimonials.",
         ],
       },
@@ -116,7 +116,7 @@ export const policies = {
   "refund-policy": {
     title: "Refund policy",
     description:
-      "Refund eligibility, requests and processing timelines for Influency English.",
+      "Refund eligibility, requests and processing timelines for Influencey English.",
     sections: [
       {
         heading: "Provisional terms",

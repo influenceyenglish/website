@@ -1,5 +1,6 @@
 ﻿import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { Footer } from "@/components/sections/Footer";
 import shellStyles from "@/components/legal/DocumentShell.module.css";
 import styles from "./PaymentSuccess.module.css";
@@ -13,7 +14,16 @@ export default function PaymentSuccessPage() {
   return (
     <>
       <header className={`${shellStyles.header} ${styles.header}`}>
-        <Link href="/">Influency English</Link>
+        <Link href="/" aria-label="Influencey English home">
+          <Image
+            src="/images/influencey-english.svg"
+            alt="Influencey English"
+            width={574}
+            height={329}
+            className={styles.logo}
+            unoptimized
+          />
+        </Link>
       </header>
       <main id="main-content" className={styles.main}>
         <PaymentStatus />

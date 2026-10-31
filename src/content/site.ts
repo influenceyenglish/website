@@ -22,13 +22,13 @@ export const plans = {
 export type PlanKey = keyof typeof plans;
 
 export const site = {
-  name: "Influency English",
+  name: "Influencey English",
   joinHref: "#pricing",
   email: "hello@influenceyenglish.com",
   hero: {
     heading: "For people who are ready to speak English.",
     description:
-      "Influency English is a speaking-practice community for anyone who wants to speak clearly, build confidence, and grow through real conversations.",
+      "Influencey English is a speaking-practice community for anyone who wants to speak clearly, build confidence, and grow through real conversations.",
     note: "Real practice · No more fear of speaking",
   },
   navigation: [
@@ -60,7 +60,7 @@ export const site = {
         title: "Weekly Public Speaking",
         detail: "Step up. Speak with confidence.",
         src: "/images/features/public-speaking-session-weekly.webp",
-        alt: "Influency English public-speaking session with members on a video call",
+        alt: "Influencey English public-speaking session with members on a video call",
       },
       {
         title: "Shadow Writing",
@@ -136,7 +136,7 @@ export const site = {
   founder: {
     heading: "Hi, This is Hashim.\nA community with a purpose.",
     paragraphs: [
-      "Influency English is led by Mohamed Hashim. Its focus is practical: create room for people to use English, receive corrective feedback and keep speaking.",
+      "Influencey English is led by Mohamed Hashim. Its focus is practical: create room for people to use English, receive corrective feedback and keep speaking.",
       "The community is designed mainly around the needs of men starting or newly entering their careers. The aim is not only fluent sentences, but thoughtful communication — listening well, responding with care and expressing ideas clearly.",
     ],
     stats: [
@@ -201,7 +201,7 @@ export const heroRows: MemberCard[][] = [
     {
       type: "video",
       video: "/videos/students/nihal-short.mp4",
-      label: "M Nihal, Influency English student",
+      label: "M Nihal, Influencey English student",
       author: "M Nihal",
       qualification: "",
     },
@@ -220,7 +220,7 @@ export const heroRows: MemberCard[][] = [
     {
       type: "video",
       video: "/videos/students/nuha-short.mp4",
-      label: "Nuha A, Influency English student",
+      label: "Nuha A, Influencey English student",
       author: "Nuha A",
       qualification: "",
     },
@@ -233,7 +233,7 @@ export const heroRows: MemberCard[][] = [
     {
       type: "video",
       video: "/videos/students/jamsheer-short.mp4",
-      label: "Jamsheer, Influency English student",
+      label: "Jamsheer, Influencey English student",
       author: "Jamsheer",
       qualification: "",
     },
@@ -262,7 +262,7 @@ export const heroRows: MemberCard[][] = [
     {
       type: "video",
       video: "/videos/students/minha-short.mp4",
-      label: "Minha, Influency English student",
+      label: "Minha, Influencey English student",
       author: "Minha",
       qualification: "",
     },
@@ -275,7 +275,7 @@ export const heroRows: MemberCard[][] = [
     {
       type: "video",
       video: "/videos/students/noor-short.mp4",
-      label: "Noor, Influency English student",
+      label: "Noor, Influencey English student",
       author: "Noor",
       qualification: "",
     },
@@ -319,7 +319,7 @@ export const testimonials = [
 
 export const faqs = [
   {
-    question: "What is Influency English?",
+    question: "What is Influencey English?",
     answer:
       "An online English-speaking practice community. Membership includes public-speaking practice, weekly mastermind discussions, communication resources, speaker-identity training, live speaking opportunities, corrective feedback and peer support.",
   },

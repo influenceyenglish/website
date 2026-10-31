@@ -30,7 +30,7 @@ Each subscription has one failure follow-up state. A committed sending claim and
 
 ## Email environment and audit checks
 
-Set server-only RESEND_API_KEY and RESEND_FROM in Vercel Production, then redeploy. RESEND_FROM defaults to Influency English Billing <billing@influenceyenglish.com> when omitted; its sender domain must be verified in Resend. DATABASE_URL is also required by the existing payment flow. No new recipient environment variable is needed. A missing Resend key leaves the alert pending and logs billing_email_status=missing_api_key; payment processing continues.
+Set server-only RESEND_API_KEY and RESEND_FROM in Vercel Production, then redeploy. RESEND_FROM defaults to Influencey English Billing <billing@influenceyenglish.com> when omitted; its sender domain must be verified in Resend. DATABASE_URL is also required by the existing payment flow. No new recipient environment variable is needed. A missing Resend key leaves the alert pending and logs billing_email_status=missing_api_key; payment processing continues.
 
 The dispatcher retains one internal failure follow-up per subscription. It is triggered by verified payment.failed (when associated with an invoice/subscription), subscription.pending, or subscription.halted events. Initial checkout failures that cannot be associated with an owned subscription still need manual reconciliation. There is no scheduled retry worker: subsequent accepted webhooks or the explicit dispatcher command retry pending/definitively failed records. Unknown outcomes remain sending for manual review to avoid duplicate emails. Monitor Resend delivery/bounce events separately; API acceptance is not inbox delivery.
 

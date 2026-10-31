@@ -173,11 +173,17 @@ try {
         ),
       );
       await page
-        .getByText("Welcome to Influency English!", { exact: true })
+        .getByText("Welcome to Influencey English!", { exact: true })
         .waitFor();
       const video = page.getByLabel("Community joining video");
-      assert.equal(await video.getAttribute("src"), "/videos/founder.mp4");
-      assert.equal(await video.getAttribute("controls"), "");
+      assert.equal(
+        await video.getAttribute("src"),
+        "/videos/hashim-welcome.mp4#t=0.001",
+      );
+      assert.equal(await video.getAttribute("controls"), null);
+      await page
+        .getByRole("button", { name: "Play community joining video" })
+        .waitFor();
       assert.equal(await video.getAttribute("autoplay"), null);
       assert(
         !(await page.locator("main").innerText()).includes("Browser test,"),

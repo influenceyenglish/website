@@ -5,7 +5,7 @@ export function getBusinessDetails() {
     "VALIYAKKATHODI MOHAMMED KOYA MOHAMED HASHIM THANGAL";
   const deliveryPlatform =
     process.env.BUSINESS_DELIVERY_PLATFORM?.trim() ||
-    "Access is through the Influency English community. Live speaking and practice sessions are conducted online; session timings are shared with members after joining.";
+    "Access is through the Influencey English community. Live speaking and practice sessions are conducted online; session timings are shared with members after joining.";
   return {
     legalName,
     deliveryPlatform,
@@ -18,7 +18,7 @@ export function getBusinessDetails() {
 
 const details = getBusinessDetails();
 export const business = {
-  brand: "Influency English",
+  brand: "Influencey English",
   operator: "Mohamed Hashim",
   type: "Individual",
   razorpayBrand: "MOHAMED HASHIM",

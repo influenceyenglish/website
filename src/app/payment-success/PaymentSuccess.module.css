@@ -32,14 +32,6 @@
   color: var(--primary-dark);
 }
 
-.eyebrow {
-  margin-bottom: 28px;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
 .icon {
   width: 72px;
   height: 72px;
@@ -98,18 +90,11 @@
   line-height: 1.6;
 }
 
-.emailNote {
-  margin-top: 16px;
-  color: var(--muted);
-  font-size: 14px;
-  line-height: 1.6;
-}
-
 .cta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 24px;
+  gap: 12px;
   margin-top: 32px;
   padding: 19px 28px;
   border-radius: 12px;
@@ -186,6 +171,7 @@
 @media (max-width: 600px) {
   .main {
     min-height: 590px;
+    padding: 40px 20px 64px;
     background-size:
       auto,
       44px 44px,
@@ -201,7 +187,7 @@
     width: 100%;
     padding-inline: 18px;
     gap: 16px;
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 .header > a:first-child:only-child {
@@ -211,5 +197,33 @@
 @media (max-width: 809px) {
   .header > a:first-child:only-child {
     font-size: 18px;
+  }
+}
+
+.logo {
+  display: block;
+  width: clamp(120px, 20vw, 164px);
+  height: auto;
+}
+.whatsappIcon {
+  flex-shrink: 0;
+}
+.cta {
+  max-width: 100%;
+  min-height: 56px;
+  text-align: center;
+}
+@media (max-width: 600px) {
+  .heading {
+    font-size: clamp(30px, 8vw, 38px);
+  }
+  .header {
+    padding: 16px 20px;
+  }
+  .icon {
+    margin-bottom: 24px;
+  }
+  .greeting {
+    margin-top: 20px;
   }
 }
