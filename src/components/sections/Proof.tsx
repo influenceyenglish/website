@@ -1,90 +1,52 @@
-import Image from "next/image";
+﻿"use client";
+
+import { useRef, useState } from "react";
 import { AnimatedText } from "@/components/motion/AnimatedText";
-import { Ticker } from "@/components/motion/Ticker";
 import { Button } from "@/components/ui/Button";
-import { Video } from "@/components/ui/Video";
 import styles from "./Proof.module.css";
 
-type ProofCard =
-  | {
-      id: string;
-      type: "quote";
-      quote: string;
-      author: string;
-      profession: string;
-      image?: string;
-      placeholder: true;
-    }
-  | { id: string; type: "video"; src: string; label: string; poster: string };
-
-// Each clip appears once. Non-repeating tickers move these rows back and forth.
-// Sample quotes/profiles must be replaced with consented feedback before being
-// presented as genuine testimonials. No student portrait is assigned to them.
-const proofContent: {
-  heading: string;
-  button: { label: string; href: string };
-  rows: ProofCard[][];
-} = {
+// Edit or reorder these JSON entries to update the carousel.
+const proofContent = {
+  badge: "Student stories",
   heading: "The proof is in the people",
-  button: { label: "Join us now", href: "#pricing" },
-  rows: [
-    [
-      {
-        id: "nihal-video",
-        type: "video",
-        src: "/videos/students/nihal-short.mp4",
-        label: "M Nihal shares his speaking experience",
-        poster: "/images/students/nihal1.webp",
-      },
-      {
-        id: "aarav-quote",
-        type: "quote",
-        quote:
-          "I still pause to find the right words, but I no longer stay silent in team meetings. Daily conversations make it easier to speak up.",
-        author: "Aarav Menon",
-        profession: "Software Engineer",
-        placeholder: true,
-      },
-      {
-        id: "nuha-video",
-        type: "video",
-        src: "/videos/students/nuha-short.mp4",
-        label: "Nuha shares her speaking experience",
-        poster: "/images/students/nuha1.webp",
-      },
-      {
-        id: "jamsheer-video",
-        type: "video",
-        src: "/videos/students/jamsheer-short.mp4",
-        label: "Jamsheer shares his speaking experience",
-        poster: "/images/students/jamsheer1.webp",
-      },
-    ],
-    [
-      {
-        id: "minha-video",
-        type: "video",
-        src: "/videos/students/minha-short.mp4",
-        label: "Minha shares her speaking experience",
-        poster: "/images/students/minha1.webp",
-      },
-      {
-        id: "ananya-quote",
-        type: "quote",
-        quote:
-          "Practising with a partner keeps me consistent. I am getting better at explaining my ideas without planning every sentence in my head.",
-        author: "Ananya Nair",
-        profession: "Marketing Executive",
-        placeholder: true,
-      },
-      {
-        id: "noor-video",
-        type: "video",
-        src: "/videos/students/noor-short.mp4",
-        label: "Noor shares his speaking experience",
-        poster: "/images/students/noor1.webp",
-      },
-    ],
+  description:
+    "Hear our members share how everyday speaking practice helped them build confidence in English.",
+  videos: [
+    {
+      video: "/videos/students/nihal-short.mp4",
+      poster: "/images/students/nihal1.webp",
+      quote: "Now I speak with more confidence.",
+      studentName: "M Nihal",
+      studentProfession: "Software Engineer",
+    },
+    {
+      video: "/videos/students/nuha-short.mp4",
+      poster: "/images/students/nuha1.webp",
+      quote: "Now I try to speak whenever I get the chance.",
+      studentName: "Nuha A",
+      studentProfession: "Influencey English member",
+    },
+    {
+      video: "/videos/students/jamsheer-short.mp4",
+      poster: "/images/students/jamsheer1.webp",
+      quote: "The best part is the practice. I’m speaking more.",
+      studentName: "Jamsheer",
+      studentProfession: "Influencey English member",
+    },
+    {
+      video: "/videos/students/minha-short.mp4",
+      poster: "/images/students/minha1.webp",
+      quote: "Speaking English feels much more natural now.",
+      studentName: "Ayisha Minha",
+      studentProfession: "Influencey English member",
+    },
+    {
+      video: "/videos/students/noor-short.mp4",
+      poster: "/images/students/noor1.webp",
+      quote: "I can express my ideas much more clearly now.",
+      studentName: "Muhammad Noor",
+      studentProfession: "Influencey English member",
+    },
   ],
 };
 
@@ -97,83 +59,187 @@ export function StudentProof() {
       <p className="eyebrow" id="student-proof-title">
         Student voices
       </p>
-      <p>
-        Watch the student videos below. Sample quote cards are labelled
-        separately.
-      </p>
+      <p>Hear our members share their English speaking journeys.</p>
       <a href="#members">Explore the student stories &darr;</a>
     </section>
   );
 }
 
 export function Proof() {
+  const track = useRef<HTMLDivElement>(null);
+  const videos = useRef<(HTMLVideoElement | null)[]>([]);
+  const [playing, setPlaying] = useState<number | null>(null);
+  const [position, setPosition] = useState({ start: true, end: false });
+  const [error, setError] = useState("");
+
+  function pauseOthers(index: number) {
+    videos.current.forEach((video, other) => {
+      if (other !== index) video?.pause();
+    });
+  }
+
+  async function toggle(index: number) {
+    const video = videos.current[index];
+    if (!video) return;
+    setError("");
+    if (!video.paused) {
+      video.pause();
+      return;
+    }
+    pauseOthers(index);
+    try {
+      await video.play();
+    } catch {
+      setError(
+        `Could not play ${proofContent.videos[index].studentName}’s video. Please try again.`,
+      );
+    }
+  }
+
+  function navigate(direction: number) {
+    const element = track.current;
+    const card = element?.firstElementChild;
+    if (!element || !card) return;
+    element.scrollBy({
+      left:
+        direction *
+        (card.getBoundingClientRect().width +
+          parseFloat(getComputedStyle(element).gap)),
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "instant"
+        : "smooth",
+    });
+  }
+
   return (
-    <section id="members" className={styles.proof}>
-      <AnimatedText className={styles.heading}>
-        {proofContent.heading}
-      </AnimatedText>
-      <div className={styles.rows}>
-        {proofContent.rows.map((row, rowIndex) => (
-          <Ticker
-            key={rowIndex}
-            className={styles.proofTicker}
-            reverse={rowIndex === 1}
-            speed={28}
-            mobileSpeed={20}
-            gap={20}
-            hoverSpeed={0}
-            repeat={false}
-          >
-            {row.map((card) =>
-              card.type === "video" ? (
-                <div
-                  className={`${styles.card} ${styles.videoCard}`}
-                  key={card.id}
-                >
-                  <Video
-                    src={card.src}
-                    label={card.label}
-                    poster={card.poster}
-                    controls
-                  />
+    <section
+      id="members"
+      className={styles.proof}
+      aria-label="Student testimonials"
+    >
+      <header className={styles.header}>
+        <p className={styles.badge}>{proofContent.badge}</p>
+        <AnimatedText className={styles.heading}>
+          {proofContent.heading}
+        </AnimatedText>
+        <p className={styles.description}>{proofContent.description}</p>
+      </header>
+      <div className={styles.carousel}>
+        <div
+          ref={track}
+          id="proof-videos"
+          className={styles.track}
+          role="region"
+          aria-label="Student videos. Swipe or use the arrow keys to explore."
+          tabIndex={0}
+          onScroll={() => {
+            const element = track.current;
+            if (!element) return;
+            setPosition({
+              start: element.scrollLeft <= 2,
+              end:
+                element.scrollLeft + element.clientWidth >=
+                element.scrollWidth - 2,
+            });
+            videos.current.forEach((video) => {
+              if (!video || video.paused) return;
+              const bounds = video.getBoundingClientRect();
+              const viewport = element.getBoundingClientRect();
+              if (
+                bounds.right <= viewport.left ||
+                bounds.left >= viewport.right
+              )
+                video.pause();
+            });
+          }}
+        >
+          {proofContent.videos.map((student, index) => (
+            <article
+              className={styles.card}
+              key={student.video}
+              aria-label={`${student.studentName}, ${index + 1} of ${proofContent.videos.length}`}
+            >
+              <video
+                ref={(element) => {
+                  videos.current[index] = element;
+                }}
+                src={student.video}
+                poster={student.poster}
+                preload="none"
+                playsInline
+                loop
+                controls={playing === index}
+                aria-label={`${student.studentName}’s testimonial`}
+                onPlay={() => {
+                  pauseOthers(index);
+                  setPlaying(index);
+                }}
+                onPause={() =>
+                  setPlaying((current) => (current === index ? null : current))
+                }
+                onEnded={() =>
+                  setPlaying((current) => (current === index ? null : current))
+                }
+              />
+              {playing !== index && (
+                <div className={styles.overlay}>
+                  <blockquote>{student.quote}</blockquote>
+                  <p>
+                    <strong>{student.studentName}</strong>
+                    <span>{student.studentProfession}</span>
+                  </p>
                 </div>
-              ) : (
-                <figure
-                  className={`${styles.card} ${styles.quoteCard}`}
-                  key={card.id}
-                >
-                  <div className={styles.quoteHeader}>
-                    <span className={styles.quoteMark} aria-hidden="true">
-                      &ldquo;
-                    </span>
-                    <span className={styles.sampleLabel}>Sample quote</span>
-                  </div>
-                  <blockquote>{card.quote}</blockquote>
-                  <figcaption>
-                    {card.image ? (
-                      <Image src={card.image} alt="" width={44} height={44} />
-                    ) : (
-                      <span className={styles.avatar} aria-hidden="true">
-                        {card.author
-                          .split(" ")
-                          .map((part) => part[0])
-                          .slice(0, 2)
-                          .join("")}
-                      </span>
-                    )}
-                    <span className={styles.attribution}>
-                      <strong>{card.author}</strong>
-                      <span>{card.profession}</span>
-                    </span>
-                  </figcaption>
-                </figure>
-              ),
-            )}
-          </Ticker>
-        ))}
+              )}
+              <button
+                type="button"
+                className={`${styles.play} ${playing === index ? styles.playing : ""}`}
+                aria-label={`${playing === index ? "Pause" : "Play"} ${student.studentName}’s video`}
+                onClick={() => void toggle(index)}
+              >
+                {playing === index ? (
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path
+                      d="M8 5v14M16 5v14"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="m8 5 12 7-12 7Z" fill="currentColor" />
+                  </svg>
+                )}
+              </button>
+            </article>
+          ))}
+        </div>
+        <button
+          type="button"
+          className={`${styles.arrow} ${styles.previous}`}
+          aria-label="Previous student video"
+          aria-controls="proof-videos"
+          disabled={position.start}
+          onClick={() => navigate(-1)}
+        >
+          &larr;
+        </button>
+        <button
+          type="button"
+          className={`${styles.arrow} ${styles.next}`}
+          aria-label="Next student video"
+          aria-controls="proof-videos"
+          disabled={position.end}
+          onClick={() => navigate(1)}
+        >
+          &rarr;
+        </button>
       </div>
-      <Button href={proofContent.button.href} className={styles.joinButton}>
-        {proofContent.button.label}
+      <p className={styles.status} role="status">
+        {error}
+      </p>
+      <Button href="#pricing" className={styles.joinButton}>
+        Join us now
       </Button>
     </section>
   );

@@ -12,15 +12,7 @@ const students: TransformationStudent[] = [
     profession: "Influencey English member",
     story:
       "Every speaking journey has a starting point. Watch Jamsheer?s speaking journey.",
-    video: "/videos/students/before-after/jamsheer-after.mp4",
-  },
-  {
-    id: "minha",
-    studentName: "Minha",
-    profession: "Influencey English member",
-    story:
-      "Every speaking journey has a starting point. Watch Minha?s speaking journey.",
-    video: "/videos/students/before-after/minha-after.mp4",
+    video: "/videos/students/before-after/jamsheer-before-after.mp4",
   },
   {
     id: "noor",
@@ -28,7 +20,7 @@ const students: TransformationStudent[] = [
     profession: "Influencey English member",
     story:
       "Every speaking journey has a starting point. Watch Noor?s speaking journey.",
-    video: "/videos/students/before-after/noor-after.mp4",
+    video: "/videos/students/before-after/noor-before-after.mp4",
   },
 ];
 

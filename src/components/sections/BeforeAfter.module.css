@@ -41,7 +41,6 @@
 .visual {
   min-width: 0;
   width: 100%;
-  max-width: 340px;
   margin-inline: auto;
 }
 .details {
@@ -83,8 +82,8 @@
     margin-bottom: 52px;
   }
   .row {
-    grid-template-columns: minmax(0, 340px) minmax(0, 1fr);
-    gap: clamp(36px, 6vw, 88px);
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: clamp(28px, 4vw, 64px);
     align-items: center;
     padding: clamp(28px, 4vw, 56px);
     border-radius: 32px;
