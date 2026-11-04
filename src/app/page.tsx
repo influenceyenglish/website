@@ -5,6 +5,7 @@ import { Overview } from "@/components/sections/Overview";
 import { Benefits } from "@/components/sections/Benefits";
 import { Audience } from "@/components/sections/Audience";
 import { Founder } from "@/components/sections/Founder";
+import { BeforeAfter } from "@/components/sections/BeforeAfter";
 import { Invitation } from "@/components/sections/Invitation";
 import { Pricing } from "@/components/sections/Pricing";
 import { FAQ } from "@/components/sections/FAQ";
@@ -21,6 +22,7 @@ export default function Home() {
         <Audience />
         {/* <Invitation /> */}
         {/* <Proof /> */}
+        <BeforeAfter />
         <Founder />
         <Pricing />
         <FAQ />
