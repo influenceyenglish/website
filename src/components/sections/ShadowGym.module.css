@@ -1,0 +1,14 @@
+.videoCard {
+  aspect-ratio: 4 / 3;
+}
+.section > div > p {
+  margin-inline: auto;
+  margin-top: 24px;
+}
+.section article h3 {
+  margin-top: 20px;
+  font-size: clamp(26px, 2.23vw, 32px);
+}
+.section article p {
+  margin-top: 16px;
+}

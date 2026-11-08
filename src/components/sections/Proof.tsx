@@ -190,27 +190,18 @@ export function Proof() {
                   </p>
                 </div>
               )}
-              <button
-                type="button"
-                className={`${styles.play} ${playing === index ? styles.playing : ""}`}
-                aria-label={`${playing === index ? "Pause" : "Play"} ${student.studentName}’s video`}
-                onClick={() => void toggle(index)}
-              >
-                {playing === index ? (
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path
-                      d="M8 5v14M16 5v14"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    />
-                  </svg>
-                ) : (
+              {playing !== index && (
+                <button
+                  type="button"
+                  className={styles.play}
+                  aria-label={`Play ${student.studentName}’s video`}
+                  onClick={() => void toggle(index)}
+                >
                   <svg viewBox="0 0 24 24" aria-hidden="true">
                     <path d="m8 5 12 7-12 7Z" fill="currentColor" />
                   </svg>
-                )}
-              </button>
+                </button>
+              )}
             </article>
           ))}
         </div>
